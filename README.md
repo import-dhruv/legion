@@ -19,6 +19,13 @@ A production-oriented multi-agent software engineering platform. One human provi
 | Next.js command center (dashboard, org hierarchy, project workspace, live activity, approvals) | `frontend/` | Implemented |
 | Automated end-to-end verification (26 tests) | `backend/tests/` | Implemented and passing |
 
+## Live demo
+
+- GitHub: https://github.com/import-dhruv/legion
+- Command center: https://legion-blue.vercel.app
+- API: https://legion-api.vercel.app
+- Deployment details and Vercel limitations: [DEPLOYMENT.md](DEPLOYMENT.md)
+
 ## Quick start
 
 ```bash
