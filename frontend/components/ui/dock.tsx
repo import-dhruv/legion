@@ -23,8 +23,9 @@ export interface DockProps extends VariantProps<typeof dockVariants> {
   children: React.ReactNode
 }
 
-const DEFAULT_SIZE = 40
-const DEFAULT_MAGNIFICATION = 60
+const DEFAULT_SIZE = 36
+// ~1.12x — a hint of magnification, not a rubber-band effect.
+const DEFAULT_MAGNIFICATION = 40
 const DEFAULT_DISTANCE = 140
 const DEFAULT_DISABLEMAGNIFICATION = false
 
@@ -98,6 +99,8 @@ export interface DockIconProps extends Omit<
   mouseX?: MotionValue<number>
   className?: string
   children?: React.ReactNode
+  /** Fades in a small label above the icon on hover/focus. */
+  label?: string
   props?: PropsWithChildren
 }
 
@@ -109,6 +112,7 @@ const DockIcon = ({
   mouseX,
   className,
   children,
+  label,
   ...props
 }: DockIconProps) => {
   const ref = useRef<HTMLDivElement>(null)
@@ -128,10 +132,11 @@ const DockIcon = ({
     [size, targetSize, size]
   )
 
+  // Near-critical damping: the icon settles without springy overshoot.
   const scaleSize = useSpring(sizeTransform, {
-    mass: 0.1,
-    stiffness: 150,
-    damping: 12,
+    mass: 0.6,
+    stiffness: 260,
+    damping: 32,
   })
 
   return (
@@ -139,13 +144,21 @@ const DockIcon = ({
       ref={ref}
       style={{ width: scaleSize, height: scaleSize, padding }}
       className={cn(
-        "flex aspect-square cursor-pointer items-center justify-center rounded-full",
+        "group/dock-icon relative flex aspect-square cursor-pointer items-center justify-center rounded-full",
         disableMagnification && "hover:bg-muted-foreground transition-colors",
         className
       )}
       {...props}
     >
       <div>{children}</div>
+      {label && (
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute bottom-full left-1/2 mb-1 -translate-x-1/2 translate-y-1 whitespace-nowrap rounded-md border border-border bg-background px-1.5 py-0.5 text-[10px] font-medium text-foreground opacity-0 shadow-panel transition-[opacity,transform] duration-200 ease-out group-hover/dock-icon:translate-y-0 group-hover/dock-icon:opacity-100 group-focus-within/dock-icon:translate-y-0 group-focus-within/dock-icon:opacity-100"
+        >
+          {label}
+        </span>
+      )}
     </motion.div>
   )
 }

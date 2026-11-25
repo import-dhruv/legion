@@ -95,11 +95,11 @@ export function ApprovalsTab({ projectId, compact = false, global = false }: { p
         />
       ) : (
         <div className="space-y-3">
-          {items.map((approval) => {
+          {items.map((approval, index) => {
             const pending = approval.status === "pending";
             const locked = busy.includes(approval.id);
             return (
-              <BlurFade key={approval.id} delay={0.03 + items.indexOf(approval) * 0.05} offset={10} blur="6px">
+              <Reveal key={approval.id} delay={Math.min(index, 10) * stagger}>
               <MagicCard
                 gradientColor="rgba(0, 0, 0,0.10)"
                 gradientFrom={pending ? "#a3a3a3" : "#737373"}
@@ -173,7 +173,7 @@ export function ApprovalsTab({ projectId, compact = false, global = false }: { p
 
                 {Object.keys(approval.payload).length > 0 && <JsonBlock value={approval.payload} className="mt-3" />}
               </MagicCard>
-              </BlurFade>
+              </Reveal>
             );
           })}
         </div>

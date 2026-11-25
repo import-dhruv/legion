@@ -164,19 +164,22 @@ export function AppSidebar() {
           <Dock
             className="mt-2 h-12 w-max gap-0.5 border-black/[0.07] bg-white p-1.5 shadow-panel"
             iconSize={30}
-            iconMagnification={42}
-            iconDistance={90}
+            iconMagnification={34}
+            iconDistance={80}
           >
             {DOCK.map((item) => {
               const Icon = item.icon;
               const active = isCurrent(pathname, item.href, item.exact);
               return (
-                <DockIcon key={item.href} className={cn(active ? "bg-accent" : "hover:bg-muted")}>
+                <DockIcon
+                  key={item.href}
+                  label={item.label}
+                  className={cn(active ? "bg-accent" : "hover:bg-muted")}
+                >
                   <Link
                     href={item.href}
                     onClick={() => setOpenMobile(false)}
                     aria-label={item.label}
-                    title={item.label}
                   >
                     <Icon className={cn("h-4 w-4", active ? "text-foreground" : "text-muted-foreground")} />
                   </Link>
@@ -190,12 +193,12 @@ export function AppSidebar() {
           <div className="pointer-events-none absolute -right-8 -top-8 h-20 w-20 rounded-full bg-black/[0.04] blur-2xl" />
           <div className="relative flex items-center justify-between">
             <span className="flex items-center gap-2 text-xs font-medium text-foreground">
-              <span
-                className={cn(
-                  "h-2 w-2 rounded-full",
-                  healthOk ? "bg-foreground animate-pulse-soft" : "bg-muted-foreground",
+              <span className="relative flex h-2 w-2 shrink-0 items-center justify-center">
+                {healthOk && (
+                  <span aria-hidden="true" className="absolute inset-0 animate-pulse-ring rounded-full bg-foreground" />
                 )}
-              />
+                <span className={cn("relative h-2 w-2 rounded-full", healthOk ? "bg-foreground" : "bg-muted-foreground")} />
+              </span>
               {healthOk ? "System operational" : health.loading ? "Checking API…" : "API unreachable"}
             </span>
             <ActivityIcon className="h-3.5 w-3.5 text-muted-foreground" />

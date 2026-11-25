@@ -1,6 +1,6 @@
 "use client"
 
-import { motion, useScroll, type MotionProps } from "motion/react"
+import { motion, useReducedMotion, useScroll, useSpring, type MotionProps } from "motion/react"
 
 import { cn } from "@/lib/utils"
 
@@ -17,17 +17,23 @@ export function ScrollProgress({
   ...props
 }: ScrollProgressProps) {
   const { scrollYProgress } = useScroll()
+  const reduced = useReducedMotion()
+  // Spring-smoothed width: no layout thrash, no jumpy segments.
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 220,
+    damping: 30,
+    mass: 0.4,
+    restDelta: 0.001,
+  })
 
   return (
     <motion.div
       ref={ref}
       className={cn(
-        "fixed inset-x-0 top-0 z-50 h-px origin-left bg-gradient-to-r from-[#737373] via-[#525252] to-[#a3a3a3]",
+        "fixed inset-x-0 top-0 z-50 h-0.5 origin-left bg-gradient-to-r from-foreground via-foreground/60 to-foreground",
         className
       )}
-      style={{
-        scaleX: scrollYProgress,
-      }}
+      style={{ scaleX: reduced ? scrollYProgress : smoothProgress }}
       {...props}
     />
   )
