@@ -1,47 +1,51 @@
 export type Tone = "emerald" | "amber" | "rose" | "indigo" | "cyan" | "violet" | "zinc";
 
+/**
+ * Monochrome status tones. Tone names are kept for compatibility with the
+ * existing API; the palette itself is intentionally black / white / gray.
+ */
 export const toneClasses: Record<Tone, { text: string; bg: string; dot: string; border: string }> = {
   emerald: {
-    text: "text-emerald-300",
-    bg: "bg-emerald-500/10",
-    dot: "bg-emerald-400",
-    border: "border-emerald-500/25",
+    text: "text-foreground",
+    bg: "bg-secondary",
+    dot: "bg-foreground",
+    border: "border-border",
   },
   amber: {
-    text: "text-amber-300",
-    bg: "bg-amber-500/10",
-    dot: "bg-amber-400",
-    border: "border-amber-500/25",
+    text: "text-muted-foreground",
+    bg: "bg-muted",
+    dot: "bg-muted-foreground",
+    border: "border-border",
   },
   rose: {
-    text: "text-rose-300",
-    bg: "bg-rose-500/10",
-    dot: "bg-rose-400",
-    border: "border-rose-500/25",
+    text: "text-destructive",
+    bg: "bg-destructive/10",
+    dot: "bg-destructive",
+    border: "border-destructive/20",
   },
   indigo: {
-    text: "text-indigo-300",
-    bg: "bg-indigo-500/10",
-    dot: "bg-indigo-400",
-    border: "border-indigo-500/25",
+    text: "text-foreground",
+    bg: "bg-accent",
+    dot: "bg-foreground/70",
+    border: "border-border",
   },
   cyan: {
-    text: "text-cyan-300",
-    bg: "bg-cyan-500/10",
-    dot: "bg-cyan-400",
-    border: "border-cyan-500/25",
+    text: "text-muted-foreground",
+    bg: "bg-muted",
+    dot: "bg-foreground/50",
+    border: "border-border",
   },
   violet: {
-    text: "text-violet-300",
-    bg: "bg-violet-500/10",
-    dot: "bg-violet-400",
-    border: "border-violet-500/25",
+    text: "text-foreground",
+    bg: "bg-muted",
+    dot: "bg-foreground/60",
+    border: "border-border",
   },
   zinc: {
-    text: "text-zinc-300",
-    bg: "bg-zinc-500/10",
-    dot: "bg-zinc-400",
-    border: "border-zinc-500/25",
+    text: "text-muted-foreground",
+    bg: "bg-muted",
+    dot: "bg-muted-foreground",
+    border: "border-border",
   },
 };
 

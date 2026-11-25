@@ -38,7 +38,7 @@ export function ApprovalsTab({ projectId, compact = false, global = false }: { p
           spread: 68,
           startVelocity: 32,
           origin: { y: 0.65 },
-          colors: ["#a78bfa", "#818cf8", "#67e8f9", "#fde68a"],
+          colors: ["#737373", "#525252", "#525252", "#d4d4d4"],
         });
       }
       bumpApprovals();
@@ -67,8 +67,8 @@ export function ApprovalsTab({ projectId, compact = false, global = false }: { p
               className={cn(
                 "rounded-lg border px-3 py-1.5 text-xs font-medium capitalize transition-colors",
                 filter === value
-                  ? "border-indigo-400/40 bg-indigo-500/15 text-indigo-200 shadow-[0_0_16px_-8px_rgba(129,140,248,0.9)]"
-                  : "border-line bg-elevated text-zinc-500 hover:text-zinc-200",
+                  ? "border-border bg-muted text-muted-foreground shadow-[0_0_16px_-8px_rgba(0, 0, 0,0.9)]"
+                  : "border-line bg-elevated text-muted-foreground hover:text-foreground",
               )}
             >
               {value} {value === "pending" && items.length > 0 ? `(${items.length})` : ""}
@@ -96,37 +96,37 @@ export function ApprovalsTab({ projectId, compact = false, global = false }: { p
             return (
               <BlurFade key={approval.id} delay={0.03 + items.indexOf(approval) * 0.05} offset={10} blur="6px">
               <MagicCard
-                gradientColor="rgba(251,191,36,0.10)"
-                gradientFrom={pending ? "#fbbf24" : "#a78bfa"}
-                gradientTo={pending ? "#f472b6" : "#22d3ee"}
+                gradientColor="rgba(0, 0, 0,0.10)"
+                gradientFrom={pending ? "#a3a3a3" : "#737373"}
+                gradientTo={pending ? "#a3a3a3" : "#171717"}
                 className="rounded-xl p-4 shadow-panel"
               >
-                {pending && <BorderBeam size={90} duration={8} borderWidth={1} colorFrom="#fbbf24" colorTo="#f472b6" />}
+                {pending && <BorderBeam size={90} duration={8} borderWidth={1} colorFrom="#a3a3a3" colorTo="#a3a3a3" />}
                 <ShineBorder
                   borderWidth={1}
                   duration={12}
-                  shineColor={["#fbbf24", "#f472b6", "#a78bfa", "#fbbf24"]}
+                  shineColor={["#a3a3a3", "#a3a3a3", "#737373", "#a3a3a3"]}
                   className="opacity-0 transition-opacity duration-500 group-hover:opacity-100"
                 />
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="flex h-7 w-7 items-center justify-center rounded-lg border border-amber-400/25 bg-amber-500/10 text-amber-300">
+                      <span className="flex h-7 w-7 items-center justify-center rounded-lg border border-border bg-muted text-muted-foreground">
                         <ShieldIcon className="h-3.5 w-3.5" />
                       </span>
-                      <h3 className="text-[13px] font-semibold text-zinc-100">{titleize(approval.request_type)}</h3>
+                      <h3 className="text-[13px] font-semibold text-foreground">{titleize(approval.request_type)}</h3>
                       <StatusBadge status={approval.status} />
                     </div>
-                    <p className="mt-2 text-xs leading-relaxed text-zinc-300">{approval.description}</p>
+                    <p className="mt-2 text-xs leading-relaxed text-foreground">{approval.description}</p>
                   </div>
                   {pending ? (
                     <div className="flex shrink-0 items-center gap-2">
                       <ShimmerButton
                         disabled={locked}
                         onClick={() => void decide(approval.id, true)}
-                        shimmerColor="#bbf7d0"
+                        shimmerColor="#d4d4d4"
                         shimmerDuration="3s"
-                        background="linear-gradient(135deg, #059669, #10b981)"
+                        background="linear-gradient(135deg, #171717, #404040)"
                         className="px-3 py-1.5 text-xs font-semibold disabled:cursor-not-allowed disabled:opacity-50"
                       >
                         <CheckIcon className="mr-1.5 h-3.5 w-3.5" /> Approve
@@ -141,16 +141,16 @@ export function ApprovalsTab({ projectId, compact = false, global = false }: { p
                       </Button>
                     </div>
                   ) : (
-                    <span className="flex items-center gap-1.5 text-[11px] text-zinc-500">
+                    <span className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
                       <ClockIcon className="h-3.5 w-3.5" />
                       Decided {approval.decided_by ? `by ${approval.decided_by}` : ""}
                     </span>
                   )}
                 </div>
 
-                <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-[10px] text-zinc-600">
+                <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-[10px] text-muted-foreground">
                   <span className="font-mono">{approval.id}</span>
-                  <Link href={`/projects/${approval.project_id}`} className="font-mono text-indigo-300/80 hover:text-indigo-200">
+                  <Link href={`/projects/${approval.project_id}`} className="font-mono text-muted-foreground hover:text-muted-foreground">
                     {approval.project_id} →
                   </Link>
                   {approval.requester && <span>Requester: {approval.requester}</span>}

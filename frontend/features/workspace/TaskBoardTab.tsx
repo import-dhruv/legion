@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { AlertIcon, CheckIcon, ChevronRightIcon, SearchIcon } from "@/components/Icons";
 import { EmptyState, ErrorBanner, LoadingState } from "@/components/ui";
+import { Input } from "@/components/ui/input";
 import { BlurFade } from "@/components/ui/blur-fade";
 import { MagicCard } from "@/components/ui/magic-card";
 import { usePolling } from "@/hooks/usePolling";
@@ -63,20 +64,21 @@ export function TaskBoardTab({ projectId }: { projectId: string }) {
       {updateError && <div className="mb-4"><ErrorBanner message={updateError} /></div>}
 
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex flex-wrap items-center gap-2 text-[11px] text-zinc-500">
-          <span><span className="font-semibold text-zinc-200">{tasks.length}</span> tasks</span>
-          <span className="text-zinc-700">·</span>
-          <span><span className="font-semibold text-emerald-300">{tasks.filter((t) => t.status === "completed").length}</span> completed</span>
-          <span className="text-zinc-700">·</span>
-          <span><span className="font-semibold text-rose-300">{tasks.filter((t) => t.status === "failed" || t.status === "blocked").length}</span> blocked/failed</span>
+        <div className="flex flex-wrap items-center gap-2 text-[11px] text-muted-foreground">
+          <span><span className="font-semibold text-foreground">{tasks.length}</span> tasks</span>
+          <span className="text-muted-foreground">·</span>
+          <span><span className="font-semibold text-muted-foreground">{tasks.filter((t) => t.status === "completed").length}</span> completed</span>
+          <span className="text-muted-foreground">·</span>
+          <span><span className="font-semibold text-muted-foreground">{tasks.filter((t) => t.status === "failed" || t.status === "blocked").length}</span> blocked/failed</span>
         </div>
         <label className="relative block w-full max-w-xs">
-          <SearchIcon className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-600" />
-          <input
+          <SearchIcon className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+          <Input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Filter tasks…"
-            className="w-full rounded-lg border border-line bg-canvas/60 py-2 pl-9 pr-3 text-xs text-zinc-200 placeholder:text-zinc-600 focus:border-indigo-500/60 focus:outline-none"
+            className="h-9 bg-white pl-9 text-xs"
+            aria-label="Filter tasks"
           />
         </label>
       </div>
@@ -92,37 +94,37 @@ export function TaskBoardTab({ projectId }: { projectId: string }) {
             const color = toneClasses[column.tone];
             return (
               <BlurFade key={column.id} delay={columnIndex * 0.05} offset={10} blur="5px">
-              <div className="flex w-[270px] shrink-0 flex-col rounded-xl border border-white/[0.06] bg-gradient-to-b from-white/[0.025] to-transparent">
+              <div className="flex w-[270px] shrink-0 flex-col rounded-xl border border-black/[0.06] bg-gradient-to-b from-black/[0.025] to-transparent">
                 <div className="flex items-center justify-between border-b border-line/70 px-3.5 py-3">
-                  <span className="flex items-center gap-2 text-xs font-semibold text-zinc-200">
+                  <span className="flex items-center gap-2 text-xs font-semibold text-foreground">
                     <span className={cn("h-2 w-2 rounded-full", color.dot)} />
                     {column.label}
                   </span>
-                  <span className="rounded bg-elevated px-1.5 py-0.5 text-[10px] tabular-nums text-zinc-400">{items.length}</span>
+                  <span className="rounded bg-elevated px-1.5 py-0.5 text-[10px] tabular-nums text-muted-foreground">{items.length}</span>
                 </div>
                 <div className="flex-1 space-y-2 p-2.5">
-                  {items.length === 0 && <p className="px-1 py-6 text-center text-[11px] text-zinc-700">No tasks</p>}
+                  {items.length === 0 && <p className="px-1 py-6 text-center text-[11px] text-muted-foreground">No tasks</p>}
                   {items.map((task) => (
-                    <MagicCard key={task.id} gradientColor="rgba(129,140,248,0.10)" className="rounded-lg p-3 transition-transform duration-200 hover:-translate-y-px">
+                    <MagicCard key={task.id} gradientColor="rgba(0, 0, 0,0.10)" className="rounded-lg p-3 transition-transform duration-200 hover:-translate-y-px">
                       <div className="flex items-start justify-between gap-2">
-                        <h4 className="text-[12px] font-medium leading-snug text-zinc-100">{task.title}</h4>
+                        <h4 className="text-[12px] font-medium leading-snug text-foreground">{task.title}</h4>
                         <span className={cn("shrink-0 rounded px-1.5 py-0.5 font-mono text-[9px]", toneClasses[statusTone(task.priority > 6 ? "blocked" : "running")].text, "bg-elevated")}>
                           P{task.priority}
                         </span>
                       </div>
-                      <div className="mt-2 flex flex-wrap items-center gap-1.5 text-[10px] text-zinc-500">
-                        <span className="rounded bg-indigo-500/10 px-1.5 py-0.5 text-indigo-300">{titleize(task.phase)}</span>
-                        {task.retry_count > 0 && <span className="rounded bg-amber-500/10 px-1.5 py-0.5 text-amber-300">retry {task.retry_count}</span>}
-                        <span className="font-mono text-zinc-700" title={task.id}>{shortId(task.id, 10)}</span>
+                      <div className="mt-2 flex flex-wrap items-center gap-1.5 text-[10px] text-muted-foreground">
+                        <span className="rounded bg-muted px-1.5 py-0.5 text-muted-foreground">{titleize(task.phase)}</span>
+                        {task.retry_count > 0 && <span className="rounded bg-muted px-1.5 py-0.5 text-muted-foreground">retry {task.retry_count}</span>}
+                        <span className="font-mono text-muted-foreground" title={task.id}>{shortId(task.id, 10)}</span>
                       </div>
 
                       <label className="mt-3 block">
-                        <span className="mb-1 block text-[9px] uppercase tracking-wider text-zinc-600">Assigned agent</span>
+                        <span className="mb-1 block text-[9px] uppercase tracking-wider text-muted-foreground">Assigned agent</span>
                         <select
                           value={task.assigned_agent}
                           disabled={busy.includes(task.id)}
                           onChange={(event) => void update(task.id, { assigned_agent: event.target.value })}
-                          className="w-full rounded-md border border-line bg-canvas px-2 py-1.5 text-[11px] text-zinc-200 focus:border-indigo-500/60 focus:outline-none disabled:opacity-50"
+                          className="w-full rounded-md border border-line bg-canvas px-2 py-1.5 text-[11px] text-foreground focus:border-border focus:outline-none disabled:opacity-50"
                         >
                           {!agents.some((agent) => agent.id === task.assigned_agent) && (
                             <option value={task.assigned_agent}>{task.assigned_agent}</option>
@@ -134,12 +136,12 @@ export function TaskBoardTab({ projectId }: { projectId: string }) {
                       </label>
 
                       <div className="mt-2 flex items-center justify-between gap-2">
-                        <span className="text-[9px] uppercase tracking-wider text-zinc-600">Priority</span>
+                        <span className="text-[9px] uppercase tracking-wider text-muted-foreground">Priority</span>
                         <select
                           value={task.priority}
                           disabled={busy.includes(task.id)}
                           onChange={(event) => void update(task.id, { priority: Number(event.target.value) })}
-                          className="rounded-md border border-line bg-canvas px-2 py-1 text-[11px] tabular-nums text-zinc-200 focus:border-indigo-500/60 focus:outline-none disabled:opacity-50"
+                          className="rounded-md border border-line bg-canvas px-2 py-1 text-[11px] tabular-nums text-foreground focus:border-border focus:outline-none disabled:opacity-50"
                         >
                           {Array.from({ length: 10 }, (_, index) => index + 1).map((value) => (
                             <option key={value} value={value}>{value}</option>
@@ -149,11 +151,11 @@ export function TaskBoardTab({ projectId }: { projectId: string }) {
 
                       {task.dependencies.length > 0 && (
                         <div className="mt-3 border-t border-line/70 pt-2">
-                          <span className="text-[9px] uppercase tracking-wider text-zinc-600">Depends on</span>
+                          <span className="text-[9px] uppercase tracking-wider text-muted-foreground">Depends on</span>
                           <div className="mt-1 flex flex-wrap gap-1">
                             {task.dependencies.map((dependency) => (
-                              <span key={dependency} className="inline-flex items-center gap-0.5 rounded bg-elevated px-1.5 py-0.5 font-mono text-[9px] text-zinc-400">
-                                <ChevronRightIcon className="h-2.5 w-2.5 text-zinc-600" />
+                              <span key={dependency} className="inline-flex items-center gap-0.5 rounded bg-elevated px-1.5 py-0.5 font-mono text-[9px] text-muted-foreground">
+                                <ChevronRightIcon className="h-2.5 w-2.5 text-muted-foreground" />
                                 {shortId(dependency, 10)}
                               </span>
                             ))}
@@ -161,11 +163,11 @@ export function TaskBoardTab({ projectId }: { projectId: string }) {
                         </div>
                       )}
 
-                      {task.error && <p className="mt-2 flex gap-1.5 text-[10px] leading-relaxed text-rose-300"><AlertIcon className="mt-0.5 h-3 w-3 shrink-0" /> {task.error}</p>}
+                      {task.error && <p className="mt-2 flex gap-1.5 text-[10px] leading-relaxed text-muted-foreground"><AlertIcon className="mt-0.5 h-3 w-3 shrink-0" /> {task.error}</p>}
                       {task.status === "completed" && task.result && (
-                        <p className="mt-2 line-clamp-2 border-t border-line/70 pt-2 text-[10px] leading-relaxed text-zinc-500">{task.result}</p>
+                        <p className="mt-2 line-clamp-2 border-t border-line/70 pt-2 text-[10px] leading-relaxed text-muted-foreground">{task.result}</p>
                       )}
-                      <p className="mt-2 truncate text-[9px] text-zinc-700">
+                      <p className="mt-2 truncate text-[9px] text-muted-foreground">
                         {agentName(task.assigned_agent)} · {task.logs.length} log entries
                       </p>
                     </MagicCard>

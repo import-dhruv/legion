@@ -16,6 +16,10 @@ import {
   UsersIcon,
 } from "@/components/Icons";
 import { EmptyState, ErrorBanner, LoadingState, PageHeader, Panel, StatusBadge } from "@/components/ui";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { BlurFade } from "@/components/ui/blur-fade";
 import { MagicCard } from "@/components/ui/magic-card";
 import { NumberTicker } from "@/components/ui/number-ticker";
@@ -55,39 +59,43 @@ function AgentCard({ agent, agents }: { agent: Agent; agents: Agent[] }) {
 
   return (
     <MagicCard
-      gradientColor="rgba(129,140,248,0.12)"
-      gradientFrom="#a78bfa"
-      gradientTo="#22d3ee"
+      gradientColor="rgba(0, 0, 0,0.12)"
+      gradientFrom="#737373"
+      gradientTo="#171717"
       className="group flex h-full flex-col rounded-xl p-4 shadow-panel transition-transform duration-300 hover:-translate-y-0.5"
     >
       <ShineBorder
         borderWidth={1}
         duration={9}
-        shineColor={["#a78bfa", "#22d3ee", "#818cf8", "#a78bfa"]}
+        shineColor={["#737373", "#171717", "#525252", "#737373"]}
         className="opacity-0 transition-opacity duration-500 group-hover:opacity-100"
       />
       <div className="relative z-40 flex flex-1 flex-col">
       <div className="flex items-start gap-3">
-        <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-indigo-400/25 bg-gradient-to-br from-indigo-500/25 to-violet-600/10 text-sm font-bold text-indigo-200">
-          {initial}
-          <span className={cn("absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-panel", tone.dot)} />
+        <div className="relative shrink-0">
+          <Avatar className="size-10 rounded-xl border border-border bg-gradient-to-br from-muted to-accent">
+            <AvatarFallback className="rounded-xl bg-transparent text-sm font-bold text-foreground">
+              {initial}
+            </AvatarFallback>
+          </Avatar>
+          <span className={cn("absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-card", tone.dot)} />
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <h3 className="truncate text-sm font-semibold text-zinc-100">{agent.name}</h3>
-            <span className="rounded border border-line bg-elevated px-1.5 py-0.5 font-mono text-[9px] text-zinc-500">L{agent.level}</span>
+            <h3 className="truncate text-sm font-semibold text-foreground">{agent.name}</h3>
+            <Badge variant="outline" className="h-auto rounded px-1.5 py-0.5 font-mono text-[9px] text-muted-foreground">L{agent.level}</Badge>
           </div>
-          <p className="mt-0.5 truncate text-[11px] text-zinc-500">{agent.role}</p>
+          <p className="mt-0.5 truncate text-[11px] text-muted-foreground">{agent.role}</p>
         </div>
         <StatusBadge status={agent.status} className="shrink-0" />
       </div>
 
       <div className="mt-4 flex flex-wrap items-center gap-1.5">
-        <span className="rounded-md border border-indigo-500/20 bg-indigo-500/10 px-2 py-1 text-[10px] font-medium capitalize text-indigo-200">
+        <span className="rounded-md border border-border bg-muted px-2 py-1 text-[10px] font-medium capitalize text-muted-foreground">
           {agent.model_tier} model
         </span>
         {permissionChips(agent.permissions).slice(0, 4).map((chip) => (
-          <span key={chip} className="rounded-md border border-line bg-elevated/70 px-2 py-1 text-[10px] text-zinc-400">
+          <span key={chip} className="rounded-md border border-line bg-elevated/70 px-2 py-1 text-[10px] text-muted-foreground">
             {chip}
           </span>
         ))}
@@ -95,14 +103,14 @@ function AgentCard({ agent, agents }: { agent: Agent; agents: Agent[] }) {
 
       <div className="mt-4 space-y-2 border-t border-line/70 pt-3 text-[11px]">
         <div className="flex items-start justify-between gap-2">
-          <span className="shrink-0 text-zinc-600">Reports to</span>
-          <span className="truncate text-right text-zinc-300">
+          <span className="shrink-0 text-muted-foreground">Reports to</span>
+          <span className="truncate text-right text-foreground">
             {manager ? `${manager.name} · ${manager.role}` : "Human CTO"}
           </span>
         </div>
         <div className="flex items-start justify-between gap-2">
-          <span className="shrink-0 text-zinc-600">Current task</span>
-          <span className={cn("truncate text-right font-mono", agent.current_task_id ? "text-indigo-300" : "text-zinc-600")}>
+          <span className="shrink-0 text-muted-foreground">Current task</span>
+          <span className={cn("truncate text-right font-mono", agent.current_task_id ? "text-muted-foreground" : "text-muted-foreground")}>
             {agent.current_task_id ? shortId(agent.current_task_id, 14) : "unassigned"}
           </span>
         </div>
@@ -111,7 +119,7 @@ function AgentCard({ agent, agents }: { agent: Agent; agents: Agent[] }) {
       <div className="mt-3 flex-1">
         <ul className="space-y-1.5">
           {(expanded ? agent.responsibilities : agent.responsibilities.slice(0, 2)).map((responsibility) => (
-            <li key={responsibility} className="flex gap-2 text-[11px] leading-relaxed text-zinc-400">
+            <li key={responsibility} className="flex gap-2 text-[11px] leading-relaxed text-muted-foreground">
               <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-zinc-600" />
               {responsibility}
             </li>
@@ -121,7 +129,7 @@ function AgentCard({ agent, agents }: { agent: Agent; agents: Agent[] }) {
           <button
             type="button"
             onClick={() => setExpanded((value) => !value)}
-            className="mt-2 inline-flex items-center gap-1 text-[10px] font-medium text-indigo-300 hover:text-indigo-200"
+            className="mt-2 inline-flex items-center gap-1 text-[10px] font-medium text-muted-foreground hover:text-muted-foreground"
           >
             {expanded ? "Show less" : `+${agent.responsibilities.length - 2} more`}
             <ChevronDownIcon className={cn("h-3 w-3 transition-transform", expanded && "rotate-180")} />
@@ -129,7 +137,7 @@ function AgentCard({ agent, agents }: { agent: Agent; agents: Agent[] }) {
         )}
       </div>
 
-      <p className="mt-3 truncate border-t border-white/[0.06] pt-2 font-mono text-[10px] text-zinc-700" title={agent.id}>
+      <p className="mt-3 truncate border-t border-black/[0.06] pt-2 font-mono text-[10px] text-muted-foreground" title={agent.id}>
         {agent.id}
       </p>
       </div>
@@ -143,9 +151,9 @@ function OrgTree({ agents }: { agents: Agent[] }) {
   return (
     <Panel title="Reporting structure" subtitle="Human CTO → executive leadership → specialized departments" bodyClassName="p-6" beam>
       <div className="flex flex-col items-center">
-        <div className="w-full max-w-xs rounded-xl border border-indigo-400/30 bg-gradient-to-br from-indigo-500/15 to-violet-500/5 px-4 py-3 text-center">
-          <p className="text-[10px] uppercase tracking-[0.16em] text-indigo-300/70">Human CTO</p>
-          <p className="mt-1 text-sm font-semibold text-zinc-100">{cto ? `${cto.name} · ${cto.role}` : "Ada · Chief Technology Officer"}</p>
+        <div className="w-full max-w-xs rounded-xl border border-border bg-gradient-to-br from-muted to-background px-4 py-3 text-center">
+          <p className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Human CTO</p>
+          <p className="mt-1 text-sm font-semibold text-foreground">{cto ? `${cto.name} · ${cto.role}` : "Ada · Chief Technology Officer"}</p>
         </div>
         <div className="h-6 w-px bg-line" />
         <div className="relative h-px w-full max-w-3xl bg-line">
@@ -155,12 +163,12 @@ function OrgTree({ agents }: { agents: Agent[] }) {
           {(directReports.length ? directReports : []).map((agent) => (
             <div key={agent.id} className="relative rounded-lg border border-line bg-elevated/60 px-2.5 py-2 text-center">
               <span className="absolute left-1/2 -top-[13px] h-3 w-px -translate-x-1/2 bg-line" />
-              <p className="truncate text-xs font-medium text-zinc-200">{agent.name}</p>
-              <p className="mt-0.5 truncate text-[10px] text-zinc-500">{agent.role}</p>
+              <p className="truncate text-xs font-medium text-foreground">{agent.name}</p>
+              <p className="mt-0.5 truncate text-[10px] text-muted-foreground">{agent.role}</p>
             </div>
           ))}
           {directReports.length === 0 && (
-            <p className="col-span-full py-2 text-center text-xs text-zinc-600">Loading reporting lines…</p>
+            <p className="col-span-full py-2 text-center text-xs text-muted-foreground">Loading reporting lines…</p>
           )}
         </div>
       </div>
@@ -196,13 +204,13 @@ export default function AgentsPage() {
     <div className="animate-fade-in">
       <PageHeader
         eyebrow="Organization"
-        title={<SparklesText sparklesCount={6} colors={{ first: "#a78bfa", second: "#67e8f9" }} className="text-2xl font-semibold tracking-tight sm:text-[28px]">The agent org chart</SparklesText>}
+        title={<SparklesText sparklesCount={6} colors={{ first: "#737373", second: "#525252" }} className="text-2xl font-semibold tracking-tight sm:text-[28px]">The agent org chart</SparklesText>}
         description="A hierarchical engineering organization — every specialist has a role, a reporting line, a model tier and a scoped set of tool permissions."
         action={
-          <div className="flex items-center gap-2 rounded-lg border border-line bg-panel px-3 py-2 text-xs text-zinc-400">
-            <UsersIcon className="h-4 w-4 text-indigo-300" />
-            <span className="font-semibold text-zinc-100">{agents.length || "—"}</span> agents ·{" "}
-            <span className="font-semibold text-emerald-300">{working}</span> working
+          <div className="flex items-center gap-2 rounded-lg border border-line bg-panel px-3 py-2 text-xs text-muted-foreground">
+            <UsersIcon className="h-4 w-4 text-muted-foreground" />
+            <span className="font-semibold text-foreground">{agents.length || "—"}</span> agents ·{" "}
+            <span className="font-semibold text-muted-foreground">{working}</span> working
           </div>
         }
       />
@@ -219,13 +227,17 @@ export default function AgentsPage() {
           const Icon = item.icon;
           const color = toneClasses[item.tone];
           return (
-            <div key={item.label} className="flex items-center justify-between rounded-xl border border-line bg-panel/80 p-4">
-              <div>
-                <p className="text-[10px] uppercase tracking-[0.14em] text-muted">{item.label}</p>
-                <p className="mt-1.5 text-xl font-semibold tabular-nums text-zinc-50"><NumberTicker value={item.value} className="text-xl font-semibold tabular-nums text-zinc-50" /></p>
-              </div>
-              <Icon className={cn("h-5 w-5", color.text)} />
-            </div>
+            <Card key={item.label} size="sm" className="shadow-panel">
+              <CardContent className="flex items-center justify-between gap-3 py-3">
+                <div>
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">{item.label}</p>
+                  <p className="mt-1.5 text-xl font-semibold tabular-nums text-foreground">
+                    <NumberTicker value={item.value} className="text-xl font-semibold tabular-nums text-foreground" />
+                  </p>
+                </div>
+                <Icon className={cn("h-5 w-5", color.text)} />
+              </CardContent>
+            </Card>
           );
         })}
       </div>
@@ -238,16 +250,17 @@ export default function AgentsPage() {
 
           <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
             <div>
-              <h2 className="text-sm font-semibold text-zinc-100">Departments</h2>
-              <p className="mt-1 text-xs text-muted">Grouped by function, ordered by reporting hierarchy.</p>
+              <h2 className="text-sm font-semibold text-foreground">Departments</h2>
+              <p className="mt-1 text-xs text-muted-foreground">Grouped by function, ordered by reporting hierarchy.</p>
             </div>
             <label className="relative block w-full max-w-xs">
-              <SearchIcon className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-600" />
-              <input
+              <SearchIcon className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+              <Input
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder="Search agents or roles…"
-                className="w-full rounded-lg border border-line bg-panel py-2 pl-9 pr-3 text-xs text-zinc-200 placeholder:text-zinc-600 focus:border-indigo-500/60 focus:outline-none"
+                className="h-9 bg-white pl-9 text-xs"
+                aria-label="Search agents"
               />
             </label>
           </div>
@@ -263,16 +276,16 @@ export default function AgentsPage() {
                 const color = toneClasses[department.tone];
                 return (
                   <BlurFade key={department.id} delay={0.04 + index * 0.05} offset={10} blur="6px">
-                  <section className="overflow-hidden rounded-xl border border-white/[0.06] bg-surface/60">
+                  <section className="overflow-hidden rounded-xl border border-black/[0.06] bg-surface/60">
                     <header className="flex flex-wrap items-center gap-3 border-b border-line/70 bg-panel/40 px-4 py-3">
                       <span className={cn("flex h-8 w-8 items-center justify-center rounded-lg border", color.bg, color.border, color.text)}>
                         <Icon className="h-4 w-4" />
                       </span>
                       <div className="flex-1">
-                        <h3 className="text-[13px] font-semibold text-zinc-100">{department.label}</h3>
-                        <p className="text-[11px] text-zinc-500">{department.description}</p>
+                        <h3 className="text-[13px] font-semibold text-foreground">{department.label}</h3>
+                        <p className="text-[11px] text-muted-foreground">{department.description}</p>
                       </div>
-                      <span className="rounded-full border border-line bg-elevated px-2.5 py-1 text-[10px] font-medium text-zinc-400">
+                      <span className="rounded-full border border-line bg-elevated px-2.5 py-1 text-[10px] font-medium text-muted-foreground">
                         {members.length} {members.length === 1 ? "agent" : "agents"}
                       </span>
                     </header>
@@ -284,7 +297,7 @@ export default function AgentsPage() {
                 );
               })}
               {Object.keys(byDepartment).some((key) => !DEPARTMENTS.some((department) => department.id === key)) && (
-                <p className="text-xs text-amber-300">Some agents belong to an unrecognized department and are hidden by this view.</p>
+                <p className="text-xs text-muted-foreground">Some agents belong to an unrecognized department and are hidden by this view.</p>
               )}
             </div>
           )}

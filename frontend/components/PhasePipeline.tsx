@@ -36,16 +36,16 @@ export function PhasePipeline({
             <div
               className={cn(
                 "relative h-1.5 overflow-hidden rounded-full transition-all duration-700",
-                done ? "bg-emerald-500/25" : active ? "bg-indigo-500/25" : "bg-zinc-800/80",
+                done ? "bg-muted" : active ? "bg-muted" : "bg-muted",
               )}
             >
               <div
                 className={cn(
                   "absolute inset-y-0 left-0 w-full rounded-full transition-transform duration-700",
                   done
-                    ? "bg-gradient-to-r from-emerald-500 to-emerald-300 shadow-[0_0_12px_rgba(52,211,153,0.6)]"
+                    ? "bg-gradient-to-r from-foreground/80 to-foreground/40 shadow-[0_0_12px_rgba(0, 0, 0,0.6)]"
                     : active
-                      ? "bg-gradient-to-r from-indigo-500 via-violet-400 to-cyan-300 shadow-[0_0_14px_rgba(129,140,248,0.7)] animate-pulse-soft"
+                      ? "bg-gradient-to-r from-foreground via-foreground/70 to-foreground shadow-[0_0_14px_rgba(0, 0, 0,0.7)] animate-pulse-soft"
                       : "bg-transparent",
                 )}
               />
@@ -54,13 +54,13 @@ export function PhasePipeline({
               <span
                 className={cn(
                   "h-1.5 w-1.5 rounded-full transition-colors",
-                  done ? "bg-emerald-400" : active ? "bg-indigo-300 shadow-[0_0_8px_rgba(129,140,248,0.9)]" : "bg-zinc-700",
+                  done ? "bg-muted" : active ? "bg-muted shadow-[0_0_8px_rgba(0, 0, 0,0.9)]" : "bg-muted",
                 )}
               />
               <p
                 className={cn(
                   "truncate text-[10px] font-medium transition-colors",
-                  active ? "text-indigo-200" : done ? "text-zinc-400" : "text-zinc-600",
+                  active ? "text-muted-foreground" : done ? "text-muted-foreground" : "text-muted-foreground",
                 )}
                 title={titleize(phase)}
               >
@@ -68,7 +68,7 @@ export function PhasePipeline({
               </p>
             </div>
             {count && (
-              <p className="mt-1 pl-3 text-[10px] tabular-nums text-zinc-600">
+              <p className="mt-1 pl-3 text-[10px] tabular-nums text-muted-foreground">
                 {count.done}/{count.total} tasks
               </p>
             )}
