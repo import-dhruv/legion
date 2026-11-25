@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { MoreHorizontalIcon } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import {
   ActivityIcon,
   ArrowLeftIcon,
@@ -31,7 +32,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BlurFade } from "@/components/ui/blur-fade";
+import { Reveal } from "@/components/Reveal";
+import { ease } from "@/lib/motion";
 import { useEventStream } from "@/hooks/useEventStream";
 import { usePolling } from "@/hooks/usePolling";
 import { useAppStore } from "@/lib/store";
@@ -117,12 +119,13 @@ export function Workspace() {
   const activeTab = TABS.find((item) => item.id === tab);
 
   return (
-    <div className="animate-fade-in">
+    <div>
       <Link href="/projects" className="mb-5 inline-flex items-center gap-2 text-xs text-muted-foreground transition-colors hover:text-foreground">
         <ArrowLeftIcon className="h-3.5 w-3.5" /> All projects
       </Link>
 
-      <div className="mb-6 flex flex-wrap items-start justify-between gap-5">
+      <Reveal className="mb-6">
+      <div className="flex flex-wrap items-start justify-between gap-5">
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2.5">
             <h1 className="bg-gradient-to-r from-foreground via-foreground/70 to-foreground bg-clip-text text-2xl font-semibold tracking-tight text-transparent">{project?.name ?? "Project workspace"}</h1>
@@ -214,12 +217,14 @@ export function Workspace() {
           </DropdownMenu>
         </div>
       </div>
+      </Reveal>
 
       {actionError && <div className="mb-4"><ErrorBanner message={actionError} /></div>}
       {projectQuery.error && <div className="mb-4"><ErrorBanner message={projectQuery.error} onRetry={projectQuery.refresh} /></div>}
       {project?.error && <div className="mb-4"><ErrorBanner message={project.error} /></div>}
       {stream.error && <div className="mb-4"><ErrorBanner message={stream.error} /></div>}
 
+      <Reveal delay={0.06}>
       <Tabs value={tab} onValueChange={(value) => setTab(value as TabId)} className="gap-0">
         <TabsList
           variant="line"
@@ -231,8 +236,15 @@ export function Workspace() {
               <TabsTrigger
                 key={item.id}
                 value={item.id}
-                className="shrink-0 gap-2 rounded-none px-3.5 py-2.5 text-xs font-medium data-[active]:bg-transparent data-[active]:text-foreground"
+                className="shrink-0 gap-2 rounded-none px-3.5 py-2.5 text-xs font-medium data-[active]:bg-transparent data-[active]:text-foreground data-[active]:after:opacity-0"
               >
+                {item.id === tab && (
+                  <motion.span
+                    layoutId="workspace-tab-indicator"
+                    className="absolute inset-x-2 -bottom-px h-0.5 rounded-full bg-foreground"
+                    transition={{ duration: 0.32, ease }}
+                  />
+                )}
                 <Icon className="h-3.5 w-3.5" />
                 {item.label}
                 {item.id === "tasks" && tasks.data && tasks.data.length > 0 && (
@@ -250,17 +262,26 @@ export function Workspace() {
         </TabsList>
 
         <Panel title={activeTab?.label} subtitle={tabDescription(tab)} bodyClassName="p-5 min-h-[320px]" beam>
-          <BlurFade key={tab} delay={0.02} duration={0.3} offset={6} blur="4px">
-            <TabsContent value="overview"><OverviewTab projectId={projectId} project={project} /></TabsContent>
-            <TabsContent value="tasks"><TaskBoardTab projectId={projectId} /></TabsContent>
-            <TabsContent value="files"><FilesTab projectId={projectId} /></TabsContent>
-            <TabsContent value="events"><EventsTab projectId={projectId} connected={stream.connected} /></TabsContent>
-            <TabsContent value="messages"><MessagesTab projectId={projectId} /></TabsContent>
-            <TabsContent value="approvals"><ApprovalsTab projectId={projectId} compact /></TabsContent>
-            <TabsContent value="git"><GitHistoryTab projectId={projectId} /></TabsContent>
-          </BlurFade>
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={tab}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+              transition={{ duration: 0.28, ease }}
+            >
+              <TabsContent value="overview"><OverviewTab projectId={projectId} project={project} /></TabsContent>
+              <TabsContent value="tasks"><TaskBoardTab projectId={projectId} /></TabsContent>
+              <TabsContent value="files"><FilesTab projectId={projectId} /></TabsContent>
+              <TabsContent value="events"><EventsTab projectId={projectId} connected={stream.connected} /></TabsContent>
+              <TabsContent value="messages"><MessagesTab projectId={projectId} /></TabsContent>
+              <TabsContent value="approvals"><ApprovalsTab projectId={projectId} compact /></TabsContent>
+              <TabsContent value="git"><GitHistoryTab projectId={projectId} /></TabsContent>
+            </motion.div>
+          </AnimatePresence>
         </Panel>
       </Tabs>
+      </Reveal>
 
       <p className="mt-4 text-center text-[10px] text-muted-foreground">
         Data refreshes automatically every few seconds · live events via server-sent events

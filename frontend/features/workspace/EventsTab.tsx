@@ -20,6 +20,8 @@ export function EventsTab({ projectId, connected }: { projectId: string; connect
   const [query, setQuery] = useState("");
   const [autoScroll, setAutoScroll] = useState(true);
   const scrollRef = useRef<HTMLDivElement | null>(null);
+  const knownKeys = useRef<Set<string> | null>(null);
+  const lastCount = useRef(0);
 
   const events = useMemo(() => {
     const merged = new Map<string, FeedEvent>();
@@ -39,10 +41,27 @@ export function EventsTab({ projectId, connected }: { projectId: string; connect
     );
   }, [events, query]);
 
+  // Remember which lines were already on screen; only appended lines slide in.
+  const rows = useMemo(
+    () =>
+      filtered.map((event) => ({
+        event,
+        isNew: knownKeys.current !== null && !knownKeys.current.has(event.key),
+      })),
+    [filtered]
+  );
+
   useEffect(() => {
-    if (autoScroll && scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
+    knownKeys.current = new Set(filtered.map((event) => event.key));
+  }, [filtered]);
+
+  useEffect(() => {
+    if (!autoScroll || !scrollRef.current || filtered.length === lastCount.current) return;
+    lastCount.current = filtered.length;
+    scrollRef.current.scrollTo({
+      top: scrollRef.current.scrollHeight,
+      behavior: "smooth",
+    });
   }, [filtered.length, autoScroll]);
 
   return (
@@ -80,6 +99,7 @@ export function EventsTab({ projectId, connected }: { projectId: string; connect
       <div ref={scrollRef} className="max-h-[520px] min-h-[300px] overflow-y-auto rounded-xl">
         <Terminal
           sequence={false}
+          showCaret
           className="max-w-none rounded-xl border-black/[0.07] bg-[#fafafa] shadow-panel"
         >
           <AnimatedSpan className="mb-1 font-mono text-[10px] text-muted-foreground">
@@ -92,12 +112,13 @@ export function EventsTab({ projectId, connected }: { projectId: string; connect
               <EmptyState icon={<ActivityIcon className="h-5 w-5" />} title={query ? "No matching events" : "No events yet"} description="Agent activity streams here in real time." />
             </AnimatedSpan>
           ) : (
-            filtered.map((event) => {
+            rows.map(({ event, isNew }) => {
               const tone = toneClasses[eventTone(event.type)];
               const dataEntries = Object.entries(event.data);
               return (
                 <AnimatedSpan
                   key={event.key}
+                  animateOnMount={isNew}
                   className="grid grid-cols-[auto_1fr] gap-x-3 rounded px-2 py-1.5 font-mono hover:bg-black/[0.03]"
                 >
                   <time className="text-[10px] tabular-nums text-muted-foreground">{formatTime(event.timestamp)}</time>

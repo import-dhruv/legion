@@ -129,4 +129,33 @@
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(250, 250, 250, 0.9) 60%), #ffffff;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 12px 32px -24px rgba(0, 0, 0, 0.35);
   }
+
+  /* Shared hover/press language for cards and controls. */
+  .interactive-surface {
+    @apply transition-[transform,box-shadow,border-color,background-color] duration-200 ease-out hover:-translate-y-0.5 hover:shadow-glow active:translate-y-0 active:scale-[0.985];
+  }
+
+  /* Edge fades for a marquee so text enters and exits quietly. */
+  .marquee-mask {
+    mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+  }
+}
+
+/* Respect the OS setting: no movement, no flashing, no scroll animation. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
 }

@@ -41,11 +41,11 @@ export function Panel({
       gradientColor="rgba(0,0,0,0.06)"
       gradientFrom="#a3a3a3"
       gradientTo="#525252"
-      className={cn("rounded-xl shadow-panel", className)}
+      className={cn("interactive-surface rounded-xl shadow-panel", className)}
     >
       {beam && (
-        <span className="pointer-events-none absolute inset-0 z-30 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-          <BorderBeam size={90} duration={8} borderWidth={1} colorFrom="#a3a3a3" colorTo="#525252" />
+        <span className="pointer-events-none absolute inset-0 z-30 opacity-0 transition-opacity duration-500 group-hover:opacity-100 group-focus-within:opacity-100">
+          <BorderBeam size={90} duration={12} borderWidth={1} colorFrom="#a3a3a3" colorTo="#525252" />
         </span>
       )}
       <Card className="gap-0 rounded-[inherit] border-0 bg-transparent py-0 shadow-none ring-0">
@@ -88,7 +88,14 @@ export function StatusBadge({
         className,
       )}
     >
-      {dot && <span className={cn("h-1.5 w-1.5 rounded-full", tone.dot, live && "animate-pulse-soft")} />}
+      {dot && (
+        <span className="relative flex h-1.5 w-1.5 shrink-0 items-center justify-center">
+          {live && (
+            <span aria-hidden="true" className={cn("absolute inset-0 rounded-full animate-pulse-ring", tone.dot)} />
+          )}
+          <span className={cn("relative h-1.5 w-1.5 rounded-full", tone.dot)} />
+        </span>
+      )}
       {label ?? status.replace(/_/g, " ")}
     </Badge>
   );
@@ -121,16 +128,16 @@ export function KpiCard({
       gradientColor="rgba(0,0,0,0.07)"
       gradientFrom="#a3a3a3"
       gradientTo="#525252"
-      className="min-h-[132px] rounded-xl shadow-panel"
+      className="interactive-surface min-h-[132px] rounded-xl shadow-panel"
     >
       {beam && (
         <BorderBeam
           size={64}
-          duration={9}
+          duration={12}
           borderWidth={1}
           colorFrom="#a3a3a3"
           colorTo="#525252"
-          className="opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+          className="opacity-0 transition-opacity duration-500 group-hover:opacity-100 group-focus-within:opacity-100"
         />
       )}
       <Card className="gap-0 rounded-[inherit] border-0 bg-transparent py-0 shadow-none ring-0">
@@ -145,8 +152,10 @@ export function KpiCard({
                 {prefix && <span className="text-lg text-muted-foreground">{prefix}</span>}
                 {tickerValue !== undefined ? (
                   <NumberTicker
+                    key={tickerValue}
                     value={tickerValue}
-                    className="text-2xl font-semibold tracking-tight text-foreground"
+                    duration={0.9}
+                    className="text-2xl font-semibold tracking-tight text-foreground tabular-nums"
                   />
                 ) : (
                   <span className="tabular-nums">{value}</span>
@@ -175,12 +184,12 @@ export function LiveIndicator({ connected, error }: { connected: boolean; error?
         connected ? "border-border bg-secondary text-foreground" : "border-dashed border-border bg-muted text-muted-foreground",
       )}
     >
-      <span
-        className={cn(
-          "h-1.5 w-1.5 rounded-full",
-          connected ? "bg-foreground animate-pulse-soft" : "bg-muted-foreground animate-pulse-soft",
+      <span className="relative flex h-1.5 w-1.5 shrink-0 items-center justify-center">
+        {connected && (
+          <span aria-hidden="true" className="absolute inset-0 rounded-full bg-foreground animate-pulse-ring" />
         )}
-      />
+        <span className={cn("relative h-1.5 w-1.5 rounded-full", connected ? "bg-foreground" : "bg-muted-foreground")} />
+      </span>
       {connected ? "Live" : "Connecting"}
     </Badge>
   );
@@ -210,7 +219,7 @@ export function Button({
       variant={variant === "danger" ? "destructive" : variant === "ghost" ? "ghost" : variant === "primary" ? "default" : "outline"}
       size={size === "sm" ? "sm" : "default"}
       className={cn(
-        "font-medium transition-all focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-40",
+        "font-medium transition-[transform,box-shadow,background-color,color] duration-200 ease-out hover:-translate-y-0.5 hover:shadow-glow active:translate-y-0 active:scale-[0.985] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0 disabled:hover:shadow-none",
         variants[variant],
         className,
       )}

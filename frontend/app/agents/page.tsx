@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   ActivityIcon,
   BoltIcon,
@@ -15,18 +15,25 @@ import {
   TerminalIcon,
   UsersIcon,
 } from "@/components/Icons";
+import { Reveal } from "@/components/Reveal";
 import { EmptyState, ErrorBanner, LoadingState, PageHeader, Panel, StatusBadge } from "@/components/ui";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { BlurFade } from "@/components/ui/blur-fade";
 import { MagicCard } from "@/components/ui/magic-card";
 import { NumberTicker } from "@/components/ui/number-ticker";
 import { ShineBorder } from "@/components/ui/shine-border";
 import { SparklesText } from "@/components/ui/sparkles-text";
 import { usePolling } from "@/hooks/usePolling";
 import type { Agent } from "@/lib/types";
+import { stagger } from "@/lib/motion";
 import { cn, shortId, statusTone, titleize, toneClasses, type Tone } from "@/lib/utils";
 import { api } from "@/services/api";
 
@@ -62,13 +69,13 @@ function AgentCard({ agent, agents }: { agent: Agent; agents: Agent[] }) {
       gradientColor="rgba(0, 0, 0,0.12)"
       gradientFrom="#737373"
       gradientTo="#171717"
-      className="group flex h-full flex-col rounded-xl p-4 shadow-panel transition-transform duration-300 hover:-translate-y-0.5"
+      className="group interactive-surface flex h-full flex-col rounded-xl p-4 shadow-panel"
     >
       <ShineBorder
         borderWidth={1}
-        duration={9}
-        shineColor={["#737373", "#171717", "#525252", "#737373"]}
-        className="opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+        duration={14}
+        shineColor={["#a3a3a3", "#737373", "#a3a3a3", "#525252"]}
+        className="opacity-0 transition-opacity duration-500 group-hover:opacity-100 group-focus-within:opacity-100"
       />
       <div className="relative z-40 flex flex-1 flex-col">
       <div className="flex items-start gap-3">
@@ -179,6 +186,10 @@ function OrgTree({ agents }: { agents: Agent[] }) {
 export default function AgentsPage() {
   const agentsQuery = usePolling(() => api.agents(), 5000, "agents");
   const [query, setQuery] = useState("");
+  // Start with a few sections open so the org reads as groups, not one wall.
+  const [openDepartments, setOpenDepartments] = useState<string[]>(
+    DEPARTMENTS.slice(0, 3).map((department) => department.id),
+  );
 
   const agents = agentsQuery.data ?? [];
   const filtered = useMemo(() => {
@@ -197,14 +208,27 @@ export default function AgentsPage() {
     return result;
   }, [filtered]);
 
+  // A search should never hide a match behind a collapsed section.
+  useEffect(() => {
+    if (!query.trim()) return;
+    setOpenDepartments(
+      DEPARTMENTS.filter((department) => (byDepartment[department.id] ?? []).length > 0).map(
+        (department) => department.id,
+      ),
+    );
+  // Deliberately keyed on the query only: a 5s poll must not undo a manual collapse.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query]);
+
   const working = agents.filter((agent) => agent.status === "working").length;
   const strong = agents.filter((agent) => agent.model_tier === "strong").length;
 
   return (
-    <div className="animate-fade-in">
+    <div>
+      <Reveal>
       <PageHeader
         eyebrow="Organization"
-        title={<SparklesText sparklesCount={6} colors={{ first: "#737373", second: "#525252" }} className="text-2xl font-semibold tracking-tight sm:text-[28px]">The agent org chart</SparklesText>}
+        title={<SparklesText sparklesCount={4} colors={{ first: "#737373", second: "#525252" }} className="text-2xl font-semibold tracking-tight sm:text-[28px]">The agent org chart</SparklesText>}
         description="A hierarchical engineering organization — every specialist has a role, a reporting line, a model tier and a scoped set of tool permissions."
         action={
           <div className="flex items-center gap-2 rounded-lg border border-line bg-panel px-3 py-2 text-xs text-muted-foreground">
@@ -214,6 +238,7 @@ export default function AgentsPage() {
           </div>
         }
       />
+      </Reveal>
 
       {agentsQuery.error && <div className="mb-5"><ErrorBanner message={agentsQuery.error} onRetry={agentsQuery.refresh} /></div>}
 
@@ -223,21 +248,23 @@ export default function AgentsPage() {
           { label: "Working", value: working, icon: ActivityIcon, tone: "emerald" as Tone },
           { label: "Strong models", value: strong, icon: CpuIcon, tone: "violet" as Tone },
           { label: "Departments", value: DEPARTMENTS.length, icon: LayersIcon, tone: "cyan" as Tone },
-        ].map((item) => {
+        ].map((item, index) => {
           const Icon = item.icon;
           const color = toneClasses[item.tone];
           return (
-            <Card key={item.label} size="sm" className="shadow-panel">
-              <CardContent className="flex items-center justify-between gap-3 py-3">
-                <div>
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">{item.label}</p>
-                  <p className="mt-1.5 text-xl font-semibold tabular-nums text-foreground">
-                    <NumberTicker value={item.value} className="text-xl font-semibold tabular-nums text-foreground" />
-                  </p>
-                </div>
-                <Icon className={cn("h-5 w-5", color.text)} />
-              </CardContent>
-            </Card>
+            <Reveal key={item.label} delay={index * stagger}>
+              <Card size="sm" className="interactive-surface shadow-panel">
+                <CardContent className="flex items-center justify-between gap-3 py-3">
+                  <div>
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">{item.label}</p>
+                    <p className="mt-1.5 text-xl font-semibold tabular-nums text-foreground">
+                      <NumberTicker key={item.value} value={item.value} duration={0.9} className="text-xl font-semibold tabular-nums text-foreground" />
+                    </p>
+                  </div>
+                  <Icon className={cn("h-5 w-5", color.text)} />
+                </CardContent>
+              </Card>
+            </Reveal>
           );
         })}
       </div>
@@ -246,9 +273,9 @@ export default function AgentsPage() {
         <Panel><LoadingState label="Loading organization…" /></Panel>
       ) : (
         <>
-          <OrgTree agents={agents} />
+          <Reveal><OrgTree agents={agents} /></Reveal>
 
-          <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
+          <Reveal className="mt-5 flex flex-wrap items-center justify-between gap-3">
             <div>
               <h2 className="text-sm font-semibold text-foreground">Departments</h2>
               <p className="mt-1 text-xs text-muted-foreground">Grouped by function, ordered by reporting hierarchy.</p>
@@ -263,39 +290,52 @@ export default function AgentsPage() {
                 aria-label="Search agents"
               />
             </label>
-          </div>
+          </Reveal>
 
           {filtered.length === 0 ? (
             <Panel className="mt-4"><EmptyState icon={<SearchIcon className="h-5 w-5" />} title="No matching agents" description="Try a different name, role or department." /></Panel>
           ) : (
-            <div className="mt-4 space-y-5">
-              {DEPARTMENTS.map((department, index) => {
-                const members = byDepartment[department.id] ?? [];
-                if (members.length === 0) return null;
-                const Icon = department.icon;
-                const color = toneClasses[department.tone];
-                return (
-                  <BlurFade key={department.id} delay={0.04 + index * 0.05} offset={10} blur="6px">
-                  <section className="overflow-hidden rounded-xl border border-black/[0.06] bg-surface/60">
-                    <header className="flex flex-wrap items-center gap-3 border-b border-line/70 bg-panel/40 px-4 py-3">
-                      <span className={cn("flex h-8 w-8 items-center justify-center rounded-lg border", color.bg, color.border, color.text)}>
-                        <Icon className="h-4 w-4" />
-                      </span>
-                      <div className="flex-1">
-                        <h3 className="text-[13px] font-semibold text-foreground">{department.label}</h3>
-                        <p className="text-[11px] text-muted-foreground">{department.description}</p>
-                      </div>
-                      <span className="rounded-full border border-line bg-elevated px-2.5 py-1 text-[10px] font-medium text-muted-foreground">
-                        {members.length} {members.length === 1 ? "agent" : "agents"}
-                      </span>
-                    </header>
-                    <div className="grid gap-3 p-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-                      {members.map((agent) => <AgentCard key={agent.id} agent={agent} agents={agents} />)}
-                    </div>
-                  </section>
-                  </BlurFade>
-                );
-              })}
+            <div className="mt-4 space-y-4">
+              <Accordion
+                multiple
+                value={openDepartments}
+                onValueChange={(value) => setOpenDepartments(value.map(String))}
+              >
+                {DEPARTMENTS.map((department, index) => {
+                  const members = byDepartment[department.id] ?? [];
+                  if (members.length === 0) return null;
+                  const Icon = department.icon;
+                  const color = toneClasses[department.tone];
+                  return (
+                    <Reveal key={department.id} delay={Math.min(index, 8) * stagger}>
+                      <AccordionItem
+                        value={department.id}
+                        className="overflow-hidden rounded-xl border border-black/[0.06] bg-surface/60 [&:not(:last-child)]:border-b-0"
+                      >
+                        <AccordionTrigger className="w-full gap-3 border-b border-line/70 bg-panel/40 px-4 py-3 text-left hover:no-underline">
+                          <span className="flex min-w-0 flex-1 flex-wrap items-center gap-3">
+                            <span className={cn("flex h-8 w-8 items-center justify-center rounded-lg border", color.bg, color.border, color.text)}>
+                              <Icon className="h-4 w-4" />
+                            </span>
+                            <span className="min-w-0 flex-1">
+                              <span className="block text-[13px] font-semibold text-foreground">{department.label}</span>
+                              <span className="block text-[11px] text-muted-foreground">{department.description}</span>
+                            </span>
+                            <span className="rounded-full border border-line bg-elevated px-2.5 py-1 text-[10px] font-medium text-muted-foreground">
+                              {members.length} {members.length === 1 ? "agent" : "agents"}
+                            </span>
+                          </span>
+                        </AccordionTrigger>
+                        <AccordionContent className="pb-0">
+                          <div className="grid gap-3 p-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+                            {members.map((agent) => <AgentCard key={agent.id} agent={agent} agents={agents} />)}
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                    </Reveal>
+                  );
+                })}
+              </Accordion>
               {Object.keys(byDepartment).some((key) => !DEPARTMENTS.some((department) => department.id === key)) && (
                 <p className="text-xs text-muted-foreground">Some agents belong to an unrecognized department and are hidden by this view.</p>
               )}

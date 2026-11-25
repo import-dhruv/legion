@@ -31,10 +31,17 @@ export function AppShell({ children }: { children: ReactNode }) {
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(75%_50%_at_50%_-10%,rgba(0,0,0,0.045),transparent_70%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(60%_40%_at_100%_20%,rgba(0,0,0,0.025),transparent_65%)]" />
-        <div className="grid-fade absolute inset-0 opacity-60" />
-        <DotPattern width={48} height={48} cr={0.7} className="text-black/[0.07]" />
+        <div className="grid-fade absolute inset-0 opacity-30" />
+        <DotPattern width={48} height={48} cr={0.7} className="text-black/[0.05]" />
         <div className="absolute inset-x-0 top-0 h-[420px] overflow-hidden">
-          <Meteors number={8} minDelay={2} maxDelay={6} minDuration={8} maxDuration={16} className="bg-black/20" />
+          <Meteors
+            number={5}
+            minDelay={5}
+            maxDelay={14}
+            minDuration={16}
+            maxDuration={26}
+            className="bg-black/10 opacity-40"
+          />
         </div>
         <div className="absolute -left-40 top-1/3 h-80 w-80 rounded-full bg-black/[0.025] blur-[120px]" />
         <div className="absolute -right-40 top-2/3 h-80 w-80 rounded-full bg-black/[0.02] blur-[120px]" />

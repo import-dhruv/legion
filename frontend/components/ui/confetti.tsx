@@ -34,7 +34,17 @@ const ConfettiContext = createContext<ConfettiRef | null>(null)
 
 const ConfettiComponent = forwardRef<ConfettiRef, Props>((props, ref) => {
   const {
-    options,
+    // Monochrome, ~1.2s burst. Always fired explicitly (approval actions).
+    options = {
+      colors: ["#171717", "#525252", "#a3a3a3", "#d4d4d4"],
+      particleCount: 45,
+      spread: 55,
+      startVelocity: 26,
+      scalar: 0.8,
+      shapes: ["square"],
+      ticks: 72,
+      disableForReducedMotion: true,
+    } as ConfettiOptions,
     globalOptions = { resize: true, useWorker: true },
     manualstart = false,
     children,

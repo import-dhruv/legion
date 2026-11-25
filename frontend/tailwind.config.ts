@@ -66,6 +66,20 @@ const config: Config = {
           "0%, 100%": { opacity: "1" },
           "50%": { opacity: "0.45" },
         },
+        // Quiet status ring: expands once and fades out. No opacity flashing.
+        "pulse-ring": {
+          "0%": { transform: "scale(1)", opacity: "0.5" },
+          "70%, 100%": { transform: "scale(1.7)", opacity: "0" },
+        },
+        // Slow ambient drift for the hero's grayscale radial glow.
+        "glow-drift": {
+          "0%, 100%": { transform: "translate3d(-4%, -2%, 0) scale(0.95)", opacity: "0.55" },
+          "50%": { transform: "translate3d(5%, 3%, 0) scale(1.08)", opacity: "0.85" },
+        },
+        "caret-blink": {
+          "0%, 45%": { opacity: "1" },
+          "50%, 100%": { opacity: "0" },
+        },
         // Magic UI animations — preserved.
         shine: {
           "0%": { backgroundPosition: "0% 0%" },
@@ -114,18 +128,21 @@ const config: Config = {
         },
       },
       animation: {
-        "fade-in": "fade-in 220ms ease-out both",
+        "fade-in": "fade-in 320ms cubic-bezier(0.22, 1, 0.36, 1) both",
         "pulse-soft": "pulse-soft 2s ease-in-out infinite",
+        "pulse-ring": "pulse-ring 2s cubic-bezier(0.22, 1, 0.36, 1) infinite",
+        "glow-drift": "glow-drift 20s ease-in-out infinite",
+        "caret-blink": "caret-blink 1.2s steps(1, end) infinite",
         shine: "shine var(--duration, 14s) infinite linear",
-        aurora: "aurora 8s ease-in-out infinite alternate",
-        gradient: "gradient 8s linear infinite",
+        aurora: "aurora 10s ease-in-out infinite alternate",
+        gradient: "gradient 10s linear infinite",
         meteor: "meteor 5s linear infinite",
         marquee: "marquee var(--duration, 40s) infinite linear",
         "marquee-vertical": "marquee-vertical var(--duration, 40s) linear infinite",
         "shimmer-slide": "shimmer-slide var(--speed, 3s) ease-in-out infinite alternate",
         "spin-around": "spin-around calc(var(--speed, 3s) * 2) infinite linear",
-        "accordion-down": "accordion-down 0.2s ease-out",
-        "accordion-up": "accordion-up 0.2s ease-out",
+        "accordion-down": "accordion-down 0.28s cubic-bezier(0.22, 1, 0.36, 1)",
+        "accordion-up": "accordion-up 0.28s cubic-bezier(0.22, 1, 0.36, 1)",
       },
     },
   },

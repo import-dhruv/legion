@@ -1,8 +1,9 @@
 "use client"
 
 import { useEffect, useRef, type ComponentPropsWithoutRef } from "react"
-import { useInView, useMotionValue, useSpring } from "motion/react"
+import { animate, useInView, useMotionValue, useReducedMotion } from "motion/react"
 
+import { ease } from "@/lib/motion"
 import { cn } from "@/lib/utils"
 
 interface NumberTickerProps extends ComponentPropsWithoutRef<"span"> {
@@ -11,6 +12,8 @@ interface NumberTickerProps extends ComponentPropsWithoutRef<"span"> {
   direction?: "up" | "down"
   delay?: number
   decimalPlaces?: number
+  /** Seconds. Kept short so a polling refresh never feels like a slot machine. */
+  duration?: number
 }
 
 export function NumberTicker({
@@ -18,45 +21,47 @@ export function NumberTicker({
   startValue = 0,
   direction = "up",
   delay = 0,
-  className,
+  duration: tickDuration = 0.9,
   decimalPlaces = 0,
+  className,
   ...props
 }: NumberTickerProps) {
   const ref = useRef<HTMLSpanElement>(null)
+  const reduced = useReducedMotion()
   const motionValue = useMotionValue(direction === "down" ? value : startValue)
-  const springValue = useSpring(motionValue, {
-    damping: 60,
-    stiffness: 100,
-  })
   const isInView = useInView(ref, { once: true, margin: "0px" })
 
+  const format = (latest: number) =>
+    new Intl.NumberFormat("en-US", {
+      minimumFractionDigits: decimalPlaces,
+      maximumFractionDigits: decimalPlaces,
+    }).format(Number(latest.toFixed(decimalPlaces)))
+
   useEffect(() => {
-    let timer: ReturnType<typeof setTimeout> | null = null
+    const target = direction === "down" ? startValue : value
+    if (!isInView) return
 
-    if (isInView) {
-      timer = setTimeout(() => {
-        motionValue.set(direction === "down" ? startValue : value)
-      }, delay * 1000)
+    if (reduced) {
+      motionValue.set(target)
+      if (ref.current) ref.current.textContent = format(target)
+      return
     }
 
-    return () => {
-      if (timer !== null) {
-        clearTimeout(timer)
-      }
-    }
-  }, [motionValue, isInView, delay, value, direction, startValue])
+    const controls = animate(motionValue, target, {
+      duration: Math.min(tickDuration, 1),
+      delay,
+      ease,
+    })
+    return () => controls.stop()
+    // `duration` is the shared motion default unless explicitly overridden.
+  }, [motionValue, isInView, delay, value, direction, startValue, tickDuration, reduced, decimalPlaces])
 
   useEffect(
     () =>
-      springValue.on("change", (latest) => {
-        if (ref.current) {
-          ref.current.textContent = Intl.NumberFormat("en-US", {
-            minimumFractionDigits: decimalPlaces,
-            maximumFractionDigits: decimalPlaces,
-          }).format(Number(latest.toFixed(decimalPlaces)))
-        }
+      motionValue.on("change", (latest) => {
+        if (ref.current) ref.current.textContent = format(latest)
       }),
-    [springValue, decimalPlaces]
+    [motionValue, decimalPlaces]
   )
 
   return (
@@ -68,7 +73,7 @@ export function NumberTicker({
       )}
       {...props}
     >
-      {startValue}
+      {format(startValue)}
     </span>
   )
 }

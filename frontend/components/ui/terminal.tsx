@@ -19,6 +19,7 @@ import {
   type MotionProps,
 } from "motion/react"
 
+import { duration, ease } from "@/lib/motion"
 import { cn } from "@/lib/utils"
 
 interface SequenceContextValue {
@@ -62,6 +63,8 @@ interface AnimatedSpanProps extends MotionProps {
   delay?: number
   className?: string
   startOnView?: boolean
+  /** Set false for lines that were already present before this render. */
+  animateOnMount?: boolean
 }
 
 export const AnimatedSpan = ({
@@ -69,6 +72,7 @@ export const AnimatedSpan = ({
   delay = 0,
   className,
   startOnView = false,
+  animateOnMount = true,
   ...props
 }: AnimatedSpanProps) => {
   const elementRef = useRef<HTMLDivElement | null>(null)
@@ -94,9 +98,9 @@ export const AnimatedSpan = ({
   return (
     <motion.div
       ref={elementRef}
-      initial={{ opacity: 0, y: -5 }}
+      initial={animateOnMount ? { opacity: 0, y: -5 } : false}
       animate={shouldAnimate ? { opacity: 1, y: 0 } : { opacity: 0, y: -5 }}
-      transition={{ duration: 0.3, delay: sequence ? 0 : delay / 1000 }}
+      transition={{ duration, delay: sequence ? 0 : delay / 1000, ease }}
       className={cn("grid text-sm font-normal tracking-tight", className)}
       onAnimationComplete={() => {
         if (!sequence) return
@@ -231,6 +235,8 @@ interface TerminalProps {
   className?: string
   sequence?: boolean
   startOnView?: boolean
+  /** Show a soft blinking caret at the end of the log. */
+  showCaret?: boolean
 }
 
 export const Terminal = ({
@@ -238,6 +244,7 @@ export const Terminal = ({
   className,
   sequence = true,
   startOnView = true,
+  showCaret = false,
 }: TerminalProps) => {
   const containerRef = useRef<HTMLDivElement | null>(null)
   const isInView = useInView(containerRef as React.RefObject<Element>, {
@@ -277,15 +284,23 @@ export const Terminal = ({
         className
       )}
     >
-      <div className="border-border flex flex-col gap-y-2 border-b p-4">
-        <div className="flex flex-row gap-x-2">
-          <div className="h-2 w-2 rounded-full bg-red-500"></div>
-          <div className="h-2 w-2 rounded-full bg-yellow-500"></div>
-          <div className="h-2 w-2 rounded-full bg-green-500"></div>
+      <div className="flex flex-col gap-y-2 border-b border-border px-4 py-3">
+        <div className="flex flex-row gap-x-1.5" aria-hidden="true">
+          <div className="h-2 w-2 rounded-full bg-neutral-300"></div>
+          <div className="h-2 w-2 rounded-full bg-neutral-300"></div>
+          <div className="h-2 w-2 rounded-full bg-neutral-300"></div>
         </div>
       </div>
       <pre className="p-4">
-        <code className="grid gap-y-1 overflow-auto">{wrappedChildren}</code>
+        <code className="grid gap-y-1 overflow-auto text-foreground">
+          {wrappedChildren}
+          {showCaret && (
+            <span
+              aria-hidden="true"
+              className="ml-0.5 inline-block h-3 w-1.5 animate-caret-blink bg-foreground/70 align-middle"
+            />
+          )}
+        </code>
       </pre>
     </div>
   )

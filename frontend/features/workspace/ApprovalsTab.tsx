@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import Link from "next/link";
 import { CheckIcon, ClockIcon, ShieldIcon, XIcon } from "@/components/Icons";
 import { Button, EmptyState, ErrorBanner, JsonBlock, LoadingState, StatusBadge } from "@/components/ui";
-import { BlurFade } from "@/components/ui/blur-fade";
+import { Reveal } from "@/components/Reveal";
 import { BorderBeam } from "@/components/ui/border-beam";
 import { Confetti, type ConfettiRef } from "@/components/ui/confetti";
 import { MagicCard } from "@/components/ui/magic-card";
@@ -12,6 +12,7 @@ import { ShineBorder } from "@/components/ui/shine-border";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { usePolling } from "@/hooks/usePolling";
 import { useAppStore } from "@/lib/store";
+import { stagger } from "@/lib/motion";
 import { cn, formatDateTime, titleize } from "@/lib/utils";
 import { api } from "@/services/api";
 
@@ -34,11 +35,15 @@ export function ApprovalsTab({ projectId, compact = false, global = false }: { p
       await api.decideApproval(id, approved);
       if (approved) {
         void confettiRef.current?.fire({
-          particleCount: 80,
-          spread: 68,
-          startVelocity: 32,
+          particleCount: 45,
+          spread: 55,
+          startVelocity: 26,
+          ticks: 72,
+          scalar: 0.8,
+          shapes: ["square"],
           origin: { y: 0.65 },
-          colors: ["#737373", "#525252", "#525252", "#d4d4d4"],
+          colors: ["#171717", "#525252", "#a3a3a3", "#d4d4d4"],
+          disableForReducedMotion: true,
         });
       }
       bumpApprovals();
@@ -101,12 +106,21 @@ export function ApprovalsTab({ projectId, compact = false, global = false }: { p
                 gradientTo={pending ? "#a3a3a3" : "#171717"}
                 className="rounded-xl p-4 shadow-panel"
               >
-                {pending && <BorderBeam size={90} duration={8} borderWidth={1} colorFrom="#a3a3a3" colorTo="#a3a3a3" />}
+                {pending && (
+                  <BorderBeam
+                    size={90}
+                    duration={12}
+                    borderWidth={1}
+                    colorFrom="#a3a3a3"
+                    colorTo="#737373"
+                    className="opacity-0 transition-opacity duration-500 group-hover:opacity-100 group-focus-within:opacity-100"
+                  />
+                )}
                 <ShineBorder
                   borderWidth={1}
-                  duration={12}
-                  shineColor={["#a3a3a3", "#a3a3a3", "#737373", "#a3a3a3"]}
-                  className="opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                  duration={14}
+                  shineColor={["#a3a3a3", "#d4d4d4", "#737373", "#a3a3a3"]}
+                  className="opacity-0 transition-opacity duration-500 group-hover:opacity-100 group-focus-within:opacity-100"
                 />
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="min-w-0 flex-1">

@@ -17,11 +17,11 @@ import {
   ShieldIcon,
   SparkIcon,
 } from "@/components/Icons";
+import { Reveal } from "@/components/Reveal";
 import { EmptyState, ErrorBanner, KpiCard, LiveIndicator, LoadingState, Panel, StatusBadge } from "@/components/ui";
 import { AnimatedGradientText } from "@/components/ui/animated-gradient-text";
 import { AnimatedGridPattern } from "@/components/ui/animated-grid-pattern";
 import { AuroraText } from "@/components/ui/aurora-text";
-import { BlurFade } from "@/components/ui/blur-fade";
 import { Marquee } from "@/components/ui/marquee";
 import { NumberTicker } from "@/components/ui/number-ticker";
 import { Progress } from "@/components/ui/progress";
@@ -30,6 +30,7 @@ import { useEventStream } from "@/hooks/useEventStream";
 import { usePolling } from "@/hooks/usePolling";
 import { useAppStore } from "@/lib/store";
 import type { FeedEvent } from "@/lib/types";
+import { stagger } from "@/lib/motion";
 import { formatCompact, formatCurrency, formatNumber, relativeTime, titleize } from "@/lib/utils";
 import { api } from "@/services/api";
 
@@ -87,38 +88,38 @@ export default function DashboardPage() {
   const focusProject = activeProjects[0] ?? projects[0];
   const pendingCount = data?.pending_approvals?.length ?? 0;
   const signals = activeProjects.length
-    ? activeProjects.map((project) => `${project.name} · ${titleize(project.phase)}`)
-    : ["Pipeline idle", "Awaiting requirement", "Agents standing by"];
+    ? activeProjects.map((project) => `Live · ${project.name} — ${titleize(project.phase)} phase`)
+    : ["System idle", "Awaiting requirement", "Agents standing by"];
 
   return (
     <div className="space-y-5">
-      <BlurFade delay={0.04} duration={0.55} offset={12} blur="8px">
+      <Reveal>
         <section className="relative overflow-hidden rounded-2xl border border-black/[0.07] bg-surface/50 p-6 shadow-panel sm:p-8">
           <div className="pointer-events-none absolute inset-0">
             <AnimatedGridPattern
               width={44}
               height={44}
-              numSquares={9}
-              maxOpacity={0.22}
-              duration={5}
-              className="text-muted-foreground/[0.12]"
+              numSquares={6}
+              maxOpacity={0.24}
+              duration={9}
+              className="text-muted-foreground/[0.08]"
             />
-            <div className="absolute inset-0 bg-[radial-gradient(70%_120%_at_0%_0%,rgba(0, 0, 0,0.13),transparent_70%)]" />
-            <div className="absolute -right-20 -top-24 h-72 w-72 rounded-full bg-muted blur-[100px]" />
+            <div className="absolute -left-24 -top-28 h-[420px] w-[520px] animate-glow-drift rounded-full bg-[radial-gradient(closest-side,rgba(0,0,0,0.09),rgba(0,0,0,0.03)_55%,transparent_100%)] blur-[90px]" />
+            <div className="absolute inset-0 bg-[radial-gradient(70%_120%_at_0%_0%,rgba(0, 0, 0,0.06),transparent_70%)]" />
           </div>
 
           <div className="relative z-10 flex flex-wrap items-end justify-between gap-6">
             <div className="max-w-2xl">
               <AnimatedGradientText
-                speed={0.9}
-                colorFrom="#737373"
+                speed={1.1}
+                colorFrom="#8a8a8a"
                 colorTo="#171717"
                 className="text-[11px] font-semibold uppercase tracking-[0.22em]"
               >
                 Command center · live overview
               </AnimatedGradientText>
               <h1 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
-                <AuroraText colors={["#171717", "#404040", "#737373", "#171717"]} speed={0.55}>
+                <AuroraText colors={["#171717", "#404040", "#737373", "#171717"]} speed={1}>
                   Good to see you.
                 </AuroraText>
               </h1>
@@ -151,7 +152,7 @@ export default function DashboardPage() {
                   <LiveIndicator connected={stream.connected} error={stream.error} />
                 </div>
                 <div className="mt-3 flex items-baseline gap-1">
-                  <NumberTicker value={completion} className="text-3xl font-semibold text-foreground" />
+                  <NumberTicker key={completion} value={completion} duration={0.9} className="text-3xl font-semibold tabular-nums text-foreground" />
                   <span className="text-sm text-muted-foreground">%</span>
                 </div>
                 <Progress
@@ -166,25 +167,29 @@ export default function DashboardPage() {
             </div>
           </div>
         </section>
-      </BlurFade>
+      </Reveal>
 
       {dashboard.error && <div><ErrorBanner message={dashboard.error} onRetry={dashboard.refresh} /></div>}
 
       <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
-        <KpiCard label="Active projects" value={String(activeProjects.length)} tickerValue={activeProjects.length} hint={`${projects.length} total projects`} icon={<FolderIcon className="h-[18px] w-[18px]" />} tone="indigo" beam />
-        <KpiCard label="Running agents" value={formatNumber(data?.running_agents ?? 0)} tickerValue={data?.running_agents ?? 0} hint="Executing tasks now" icon={<CpuIcon className="h-[18px] w-[18px]" />} tone="cyan" />
-        <KpiCard label="Completed tasks" value={formatNumber(taskStats.completed)} tickerValue={taskStats.completed} hint={`${taskStats.total} tasks overall`} icon={<BoltIcon className="h-[18px] w-[18px]" />} tone="emerald" beam />
-        <KpiCard label="Pending approvals" value={String(pendingCount)} tickerValue={pendingCount} hint="Require human decision" icon={<ShieldIcon className="h-[18px] w-[18px]" />} tone="amber" />
-        <KpiCard label="Tokens used" value={formatCompact(data?.tokens ?? 0)} hint={`${formatNumber(data?.llm_requests ?? 0)} LLM requests`} icon={<SparkIcon className="h-[18px] w-[18px]" />} tone="violet" />
-        <KpiCard label="Est. cost" value={formatCurrency(data?.estimated_cost_usd ?? 0)} hint="Across all projects" icon={<CoinIcon className="h-[18px] w-[18px]" />} tone="emerald" />
-        <KpiCard label="LLM requests" value={formatNumber(data?.llm_requests ?? 0)} tickerValue={data?.llm_requests ?? 0} hint="Gateway calls recorded" icon={<ActivityIcon className="h-[18px] w-[18px]" />} tone="cyan" beam />
+        {[
+          <KpiCard key="active" label="Active projects" value={String(activeProjects.length)} tickerValue={activeProjects.length} hint={`${projects.length} total projects`} icon={<FolderIcon className="h-[18px] w-[18px]" />} tone="indigo" beam />,
+          <KpiCard key="agents" label="Running agents" value={formatNumber(data?.running_agents ?? 0)} tickerValue={data?.running_agents ?? 0} hint="Executing tasks now" icon={<CpuIcon className="h-[18px] w-[18px]" />} tone="cyan" />,
+          <KpiCard key="tasks" label="Completed tasks" value={formatNumber(taskStats.completed)} tickerValue={taskStats.completed} hint={`${taskStats.total} tasks overall`} icon={<BoltIcon className="h-[18px] w-[18px]" />} tone="emerald" beam />,
+          <KpiCard key="approvals" label="Pending approvals" value={String(pendingCount)} tickerValue={pendingCount} hint="Require human decision" icon={<ShieldIcon className="h-[18px] w-[18px]" />} tone="amber" />,
+          <KpiCard key="tokens" label="Tokens used" value={formatCompact(data?.tokens ?? 0)} hint={`${formatNumber(data?.llm_requests ?? 0)} LLM requests`} icon={<SparkIcon className="h-[18px] w-[18px]" />} tone="violet" />,
+          <KpiCard key="cost" label="Est. cost" value={formatCurrency(data?.estimated_cost_usd ?? 0)} hint="Across all projects" icon={<CoinIcon className="h-[18px] w-[18px]" />} tone="emerald" />,
+          <KpiCard key="requests" label="LLM requests" value={formatNumber(data?.llm_requests ?? 0)} tickerValue={data?.llm_requests ?? 0} hint="Gateway calls recorded" icon={<ActivityIcon className="h-[18px] w-[18px]" />} tone="cyan" beam />,
+        ].map((card, index) => (
+          <Reveal key={card.key} delay={index * stagger}>{card}</Reveal>
+        ))}
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-black/[0.06] bg-surface/40">
-        <Marquee repeat={4} pauseOnHover className="[--duration:50s] py-1.5">
+      <div className="marquee-mask overflow-hidden rounded-xl border border-black/[0.06] bg-surface/40">
+        <Marquee repeat={4} pauseOnHover className="[--duration:66s] py-1.5">
           {signals.map((signal, index) => (
-            <span key={`${signal}-${index}`} className="inline-flex items-center gap-2 whitespace-nowrap px-4 text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
-              <span className="h-1.5 w-1.5 rounded-full bg-muted shadow-[0_0_8px_rgba(0, 0, 0,0.8)]" />
+            <span key={`${signal}-${index}`} className="inline-flex items-center gap-2 whitespace-nowrap px-4 text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
+              <span className="h-1 w-1 rounded-full bg-foreground/40" />
               {signal}
             </span>
           ))}
@@ -192,7 +197,7 @@ export default function DashboardPage() {
       </div>
 
       {pendingCount > 0 && (
-        <BlurFade delay={0.1} offset={8}>
+        <Reveal delay={stagger * 2}>
           <div className="relative flex flex-wrap items-center justify-between gap-4 overflow-hidden rounded-xl border border-border bg-muted px-5 py-4">
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_100%_at_0%_50%,rgba(0, 0, 0,0.12),transparent_70%)]" />
             <span className="relative flex items-center gap-3 text-[13px] text-muted-foreground">
@@ -210,7 +215,7 @@ export default function DashboardPage() {
               Review approvals <ChevronRightIcon className="ml-1.5 h-3.5 w-3.5" />
             </ShimmerButton>
           </div>
-        </BlurFade>
+        </Reveal>
       )}
 
       <div className="grid gap-5 lg:grid-cols-3">
@@ -272,7 +277,7 @@ export default function DashboardPage() {
           title="Live activity"
           subtitle="Streaming organization events"
           action={<LiveIndicator connected={stream.connected} error={stream.error} />}
-          bodyClassName="max-h-[360px] overflow-y-auto p-3"
+          bodyClassName="p-3"
         >
           <ActivityFeed events={feed} max={14} animated />
         </Panel>
@@ -323,7 +328,7 @@ export default function DashboardPage() {
                   <div className="mb-1.5 flex items-center justify-between text-xs">
                     <span className="text-muted-foreground">{row.label}</span>
                     <span className="tabular-nums text-foreground">
-                      {row.value} <span className="text-muted-foreground">(<NumberTicker value={percent} className="text-xs text-muted-foreground" />%)</span>
+                      {row.value} <span className="text-muted-foreground">(<NumberTicker key={percent} value={percent} duration={0.9} className="text-xs tabular-nums text-muted-foreground" />%)</span>
                     </span>
                   </div>
                   <Progress value={percent} className="flex-col gap-0" aria-label={`${row.label} share`} />
