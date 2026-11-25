@@ -24,6 +24,7 @@ import { buttonVariants } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -175,7 +176,9 @@ export function Workspace() {
               <MoreHorizontalIcon className="h-4 w-4" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuLabel>Run controls</DropdownMenuLabel>
+              <DropdownMenuGroup>
+                <DropdownMenuLabel>Run controls</DropdownMenuLabel>
+              </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <DropdownMenuItem onSelect={() => projectQuery.refresh()}>
                 <RefreshIcon className={cn("h-3.5 w-3.5", projectQuery.loading && "animate-spin")} />
