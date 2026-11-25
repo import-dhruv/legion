@@ -23,7 +23,7 @@ A production-oriented multi-agent software engineering platform. One human provi
 
 - GitHub: https://github.com/import-dhruv/legion
 - Command center: https://legion-blue.vercel.app
-- API: https://legion-api.vercel.app
+- API: https://legion-api-mcc0.onrender.com (free Render web service; protected by a server-side token proxy)
 - Deployment details and Vercel limitations: [DEPLOYMENT.md](DEPLOYMENT.md)
 
 ## Quick start

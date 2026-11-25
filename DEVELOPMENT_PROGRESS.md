@@ -4,9 +4,12 @@ Last updated: 2026-11-25
 
 ## Deployment ✅
 - Public GitHub repo `import-dhruv/legion`, main branch pushed.
-- Vercel: `legion` (Next.js UI at https://legion-blue.vercel.app) and `legion-api` (FastAPI/Mangum at https://legion-api.vercel.app), both Git-connected for automatic deploys.
-- Both verified publicly: UI pages HTTP 200, API health/agents/projects/metrics responding.
-- Vercel limitations documented in `DEPLOYMENT.md`: serverless API cannot run long-lived orchestration, Docker sandbox or durable SQLite; full workflow runs via Docker Compose.
+- Vercel free: `legion` Next.js UI at https://legion-blue.vercel.app, connected to GitHub for automatic deploys.
+- Render free: `legion-api` FastAPI Docker web service at https://legion-api-mcc0.onrender.com, health check and token auth verified.
+- Browser traffic goes through a same-origin Vercel proxy that injects the control-plane token server-side; token is never exposed to the browser or repository.
+- Railway was attempted but its trial expired and it requires a paid plan; no payment details were added.
+- Verified publicly: UI pages HTTP 200, proxy endpoints 200, direct unauthenticated API 401, SSE stream connected.
+- Free-tier limitations documented in `DEPLOYMENT.md`; full workflow runs via Docker Compose.
 
 ## Milestone 1 — Foundation ✅
 - Project structure, Pydantic configuration, SQLAlchemy models, DB bootstrap and 30-agent seeding.
