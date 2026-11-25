@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { ChevronRightIcon, FolderIcon, LayersIcon, PlusIcon, SearchIcon, SparkIcon } from "@/components/Icons";
 import { EmptyState, ErrorBanner, LoadingState, PageHeader, Panel, StatusBadge } from "@/components/ui";
 import { Input } from "@/components/ui/input";
-import { BlurFade } from "@/components/ui/blur-fade";
+import { Reveal } from "@/components/Reveal";
 import { BorderBeam } from "@/components/ui/border-beam";
 import { MagicCard } from "@/components/ui/magic-card";
 import { NumberTicker } from "@/components/ui/number-ticker";
@@ -15,6 +15,7 @@ import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { SparklesText } from "@/components/ui/sparkles-text";
 import { PhasePipeline, PHASES } from "@/components/PhasePipeline";
 import { usePolling } from "@/hooks/usePolling";
+import { stagger } from "@/lib/motion";
 import { cn, formatDateTime, titleize } from "@/lib/utils";
 import { api } from "@/services/api";
 
@@ -94,7 +95,7 @@ export default function ProjectsPage() {
           {filtered.map((project, index) => {
             const active = project.control === "running";
             return (
-              <BlurFade key={project.id} delay={0.03 + index * 0.04} offset={10} blur="6px">
+              <Reveal key={project.id} delay={index * stagger}>
               <MagicCard
                 gradientColor="rgba(0, 0, 0,0.12)"
                 gradientFrom="#737373"
@@ -139,7 +140,7 @@ export default function ProjectsPage() {
                 </div>
                 </Link>
               </MagicCard>
-              </BlurFade>
+              </Reveal>
             );
           })}
         </div>

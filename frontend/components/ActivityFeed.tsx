@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { ActivityIcon } from "@/components/Icons";
 import { AnimatedList } from "@/components/ui/animated-list";
 import { EmptyState } from "@/components/ui";
@@ -18,6 +19,17 @@ export function ActivityFeed({
   animated?: boolean;
 }) {
   const sorted = [...events].sort((a, b) => (a.timestamp < b.timestamp ? 1 : -1)).slice(0, max);
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+  const lastTopKey = useRef<string | null>(null);
+  const topKey = sorted[0]?.key ?? null;
+
+  // Newest events are rendered first. Only move the scroll position when a
+  // genuinely new event arrives, not on every polling refresh.
+  useEffect(() => {
+    if (!topKey || lastTopKey.current === topKey) return;
+    lastTopKey.current = topKey;
+    scrollRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+  }, [topKey]);
 
   if (sorted.length === 0) {
     return (
@@ -43,7 +55,10 @@ export function ActivityFeed({
         )}
       >
         <div className="relative flex w-3 shrink-0 justify-center pt-1.5">
-          <span className={cn("h-2 w-2 rounded-full ring-4 ring-background", tone.dot, event.live && "animate-pulse-soft")} />
+          {event.live && (
+            <span aria-hidden="true" className={cn("absolute left-1/2 top-1.5 h-2 w-2 -translate-x-1/2 animate-pulse-ring rounded-full", tone.dot)} />
+          )}
+          <span className={cn("relative h-2 w-2 rounded-full ring-4 ring-background", tone.dot)} />
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
@@ -64,9 +79,11 @@ export function ActivityFeed({
     );
   });
 
-  if (animated) {
-    return <AnimatedList delay={250} className="gap-1.5">{rows}</AnimatedList>;
-  }
+  const content = animated ? <AnimatedList>{rows}</AnimatedList> : <ul className="space-y-0.5">{rows}</ul>;
 
-  return <ul className="space-y-0.5">{rows}</ul>;
+  return (
+    <div ref={scrollRef} className="max-h-[360px] overflow-y-auto overscroll-contain pr-0.5">
+      {content}
+    </div>
+  );
 }
