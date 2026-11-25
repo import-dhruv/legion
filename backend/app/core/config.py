@@ -63,6 +63,7 @@ class Settings(BaseSettings):
     enable_browser: bool = True
 
     # Safety
+    control_plane_token: SecretStr = SecretStr("")
     require_deployment_approval: bool = True
     require_architecture_approval: bool = False
     secrets_encryption_key: SecretStr = SecretStr("")

@@ -3,9 +3,11 @@ import json
 
 import pytest
 from httpx import ASGITransport, AsyncClient
+from pydantic import SecretStr
 
 from app.agents.definitions import AGENT_MAP
 from app.agents.runtime import AgentRuntime
+from app.core.config import settings
 from app.core.db import SessionLocal
 from app.core.models import Task
 from app.llm_gateway.gateway import LLMGateway, set_gateway
@@ -95,3 +97,14 @@ async def test_api_control_plane_endpoints():
         assert isinstance(files, list)
         metrics = (await client.get("/api/metrics")).text
         assert "aise_llm_tokens_total" in metrics and "aise_running_agents" in metrics
+
+
+@pytest.mark.asyncio
+async def test_control_plane_token_required_when_configured(monkeypatch):
+    monkeypatch.setattr(settings, "control_plane_token", SecretStr("free-tier-secret"))
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        assert (await client.get("/api/projects")).status_code == 401
+        assert (await client.get("/api/health")).status_code == 200
+        ok = await client.get("/api/projects", headers={"x-control-plane-token": "free-tier-secret"})
+        assert ok.status_code == 200

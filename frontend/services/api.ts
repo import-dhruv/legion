@@ -13,7 +13,9 @@ import type {
   Usage,
 } from "@/lib/types";
 
-const API_BASE = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001").replace(/\/+$/, "");
+// All browser traffic goes through a same-origin Next.js route that adds the
+// control-plane token server-side. The token is never shipped to the browser.
+const API_BASE = "/api/proxy";
 
 export const streamUrl = (projectId: string): string =>
   `${API_BASE}/api/projects/${encodeURIComponent(projectId)}/stream`;
