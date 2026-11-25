@@ -1,5 +1,7 @@
 import type { Config } from "tailwindcss";
 
+const hsl = (variable: string) => `hsl(var(${variable}) / <alpha-value>)`;
+
 const config: Config = {
   darkMode: "class",
   content: [
@@ -12,46 +14,48 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        canvas: "#08090c",
-        surface: "#0d0f14",
-        panel: "#11141b",
-        elevated: "#171a23",
-        line: "#232732",
-        muted: "#8b91a1",
-        // shadcn / Magic UI theme tokens (dark control-room palette)
-        background: "#0d0f14",
-        foreground: "#e4e4e7",
-        card: "#11141b",
-        "card-foreground": "#e4e4e7",
-        popover: "#11141b",
-        "popover-foreground": "#e4e4e7",
-        primary: "#6366f1",
-        "primary-foreground": "#ffffff",
-        secondary: "#171a23",
-        "secondary-foreground": "#e4e4e7",
-        "muted-foreground": "#8b91a1",
-        accent: "#171a23",
-        "accent-foreground": "#e4e4e7",
-        destructive: "#f43f5e",
-        "destructive-foreground": "#fff1f2",
-        border: "#232732",
-        input: "#232732",
-        ring: "#818cf8",
-        sidebar: "#0d0f14",
-        "sidebar-foreground": "#e4e4e7",
-        "sidebar-primary": "#6366f1",
-        "sidebar-accent": "#171a23",
-        "sidebar-border": "#232732",
-        "sidebar-ring": "#818cf8",
+        // Original control-room surfaces, remapped to light neutrals.
+        canvas: "#ffffff",
+        surface: "#ffffff",
+        panel: "#fafafa",
+        elevated: "#f5f5f5",
+        line: "#e5e5e5",
+        // shadcn / Magic UI theme tokens, driven by app/globals.css.
+        background: hsl("--background"),
+        foreground: hsl("--foreground"),
+        card: hsl("--card"),
+        "card-foreground": hsl("--card-foreground"),
+        popover: hsl("--popover"),
+        "popover-foreground": hsl("--popover-foreground"),
+        primary: hsl("--primary"),
+        "primary-foreground": hsl("--primary-foreground"),
+        secondary: hsl("--secondary"),
+        "secondary-foreground": hsl("--secondary-foreground"),
+        "muted-foreground": hsl("--muted-foreground"),
+        accent: hsl("--accent"),
+        "accent-foreground": hsl("--accent-foreground"),
+        destructive: hsl("--destructive"),
+        "destructive-foreground": hsl("--destructive-foreground"),
+        border: hsl("--border"),
+        input: hsl("--input"),
+        ring: hsl("--ring"),
+        sidebar: hsl("--sidebar"),
+        "sidebar-foreground": hsl("--sidebar-foreground"),
+        "sidebar-primary": hsl("--sidebar-primary"),
+        "sidebar-primary-foreground": hsl("--sidebar-primary-foreground"),
+        "sidebar-accent": hsl("--sidebar-accent"),
+        "sidebar-accent-foreground": hsl("--sidebar-accent-foreground"),
+        "sidebar-border": hsl("--sidebar-border"),
+        "sidebar-ring": hsl("--sidebar-ring"),
       },
       fontFamily: {
-        sans: ["Inter", "ui-sans-serif", "system-ui", "-apple-system", "Segoe UI", "Roboto", "sans-serif"],
-        mono: ["JetBrains Mono", "SFMono-Regular", "Menlo", "Consolas", "monospace"],
+        sans: ["var(--font-geist-sans)", "ui-sans-serif", "system-ui", "sans-serif"],
+        mono: ["var(--font-geist-mono)", "ui-monospace", "monospace"],
       },
       boxShadow: {
-        panel: "0 1px 0 0 rgba(255,255,255,0.03) inset, 0 12px 40px -20px rgba(0,0,0,0.9)",
-        glow: "0 0 0 1px rgba(99,102,241,0.35), 0 0 28px -8px rgba(99,102,241,0.4)",
-        vignette: "inset 0 1px 0 0 rgba(255,255,255,0.04)",
+        panel: "0 1px 2px rgba(0,0,0,0.04), 0 16px 40px -32px rgba(0,0,0,0.45)",
+        glow: "0 0 0 1px rgba(0,0,0,0.08), 0 12px 32px -18px rgba(0,0,0,0.28)",
+        vignette: "inset 0 1px 0 0 rgba(0,0,0,0.03)",
       },
       keyframes: {
         "fade-in": {
@@ -62,7 +66,7 @@ const config: Config = {
           "0%, 100%": { opacity: "1" },
           "50%": { opacity: "0.45" },
         },
-        // Magic UI animations
+        // Magic UI animations — preserved.
         shine: {
           "0%": { backgroundPosition: "0% 0%" },
           "50%": { backgroundPosition: "100% 100%" },

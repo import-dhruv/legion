@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { ChevronDownIcon, ChevronRightIcon, FileIcon, FolderIcon } from "@/components/Icons";
 import { EmptyState, ErrorBanner, LoadingState } from "@/components/ui";
 import { BlurFade } from "@/components/ui/blur-fade";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { MagicCard } from "@/components/ui/magic-card";
 import { usePolling } from "@/hooks/usePolling";
 import { cn } from "@/lib/utils";
@@ -62,19 +63,19 @@ function TreeItem({
         title={node.path}
         className={cn(
           "flex w-full items-center gap-1.5 rounded-md py-1.5 pr-2 text-left text-[11px] transition-colors",
-          isSelected ? "bg-indigo-500/15 text-indigo-200" : "text-zinc-400 hover:bg-white/[0.04] hover:text-zinc-100",
+          isSelected ? "bg-muted text-muted-foreground" : "text-muted-foreground hover:bg-black/[0.04] hover:text-foreground",
         )}
         style={{ paddingLeft: `${8 + depth * 14}px` }}
       >
         {node.file ? (
           <>
-            <FileIcon className="h-3.5 w-3.5 shrink-0 text-zinc-600" />
+            <FileIcon className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
             <span className="truncate">{node.name}</span>
           </>
         ) : (
           <>
-            {open ? <ChevronDownIcon className="h-3 w-3 shrink-0 text-zinc-600" /> : <ChevronRightIcon className="h-3 w-3 shrink-0 text-zinc-600" />}
-            <FolderIcon className="h-3.5 w-3.5 shrink-0 text-indigo-400/70" />
+            {open ? <ChevronDownIcon className="h-3 w-3 shrink-0 text-muted-foreground" /> : <ChevronRightIcon className="h-3 w-3 shrink-0 text-muted-foreground" />}
+            <FolderIcon className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
             <span className="truncate">{node.name}</span>
           </>
         )}
@@ -126,22 +127,24 @@ export function FilesTab({ projectId }: { projectId: string }) {
         <EmptyState icon={<FolderIcon className="h-5 w-5" />} title="Workspace is empty" description="Generated files appear here as agents implement the project." />
       ) : (
         <div className="grid gap-4 lg:grid-cols-[280px_1fr]">
-          <MagicCard gradientColor="rgba(129,140,248,0.10)" className="rounded-lg p-2">
-            <p className="px-2 pb-2 pt-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-zinc-600">
+          <MagicCard gradientColor="rgba(0, 0, 0,0.10)" className="rounded-lg p-2">
+            <p className="px-2 pb-2 pt-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
               {paths.length} file{paths.length === 1 ? "" : "s"}
             </p>
-            <ul className="max-h-[480px] overflow-y-auto">
-              {tree.map((node) => (
-                <TreeItem key={node.path} node={node} depth={0} selected={selected} onSelect={(path) => void selectFile(path)} />
-              ))}
-            </ul>
+            <ScrollArea className="h-[480px]">
+              <ul className="pr-2">
+                {tree.map((node) => (
+                  <TreeItem key={node.path} node={node} depth={0} selected={selected} onSelect={(path) => void selectFile(path)} />
+                ))}
+              </ul>
+            </ScrollArea>
           </MagicCard>
 
           <BlurFade delay={0.08} offset={10}>
-          <div className="min-w-0 overflow-hidden rounded-lg border border-white/[0.07] bg-canvas/60 shadow-panel">
+          <div className="min-w-0 overflow-hidden rounded-lg border border-black/[0.07] bg-canvas/60 shadow-panel">
             <div className="flex items-center justify-between gap-3 border-b border-line px-4 py-2.5">
-              <span className="truncate font-mono text-[11px] text-zinc-300">{selected ?? "Select a file to view its contents"}</span>
-              {content !== null && <span className="shrink-0 text-[10px] text-zinc-600">{content.split("\n").length} lines</span>}
+              <span className="truncate font-mono text-[11px] text-foreground">{selected ?? "Select a file to view its contents"}</span>
+              {content !== null && <span className="shrink-0 text-[10px] text-muted-foreground">{content.split("\n").length} lines</span>}
             </div>
             {loadingFile ? (
               <LoadingState label="Reading file…" />
@@ -149,10 +152,10 @@ export function FilesTab({ projectId }: { projectId: string }) {
               <EmptyState icon={<FileIcon className="h-5 w-5" />} title="No file selected" description="Choose a file from the workspace tree on the left." />
             ) : (
               <div className="max-h-[480px] overflow-auto">
-                <pre className="min-w-max py-3 font-mono text-[11px] leading-[1.6] text-zinc-300">
+                <pre className="min-w-max py-3 font-mono text-[11px] leading-[1.6] text-foreground">
                   {content.split("\n").map((line, index) => (
-                    <div key={index} className="flex hover:bg-white/[0.025]">
-                      <span className="sticky left-0 w-12 shrink-0 select-none bg-canvas/95 pr-3 text-right text-[10px] text-zinc-700">{index + 1}</span>
+                    <div key={index} className="flex hover:bg-black/[0.025]">
+                      <span className="sticky left-0 w-12 shrink-0 select-none bg-canvas/95 pr-3 text-right text-[10px] text-muted-foreground">{index + 1}</span>
                       <span className="whitespace-pre pr-6">{line || " "}</span>
                     </div>
                   ))}
