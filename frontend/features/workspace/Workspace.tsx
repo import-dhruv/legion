@@ -17,6 +17,7 @@ import {
   StopIcon,
 } from "@/components/Icons";
 import { Button, ErrorBanner, LiveIndicator, Panel, StatusBadge } from "@/components/ui";
+import { BlurFade } from "@/components/ui/blur-fade";
 import { useEventStream } from "@/hooks/useEventStream";
 import { usePolling } from "@/hooks/usePolling";
 import { useAppStore } from "@/lib/store";
@@ -106,7 +107,7 @@ export function Workspace() {
       <div className="mb-6 flex flex-wrap items-start justify-between gap-5">
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2.5">
-            <h1 className="text-2xl font-semibold tracking-tight text-zinc-50">{project?.name ?? "Project workspace"}</h1>
+            <h1 className="bg-gradient-to-r from-violet-200 via-indigo-100 to-cyan-200 bg-clip-text text-2xl font-semibold tracking-tight text-transparent">{project?.name ?? "Project workspace"}</h1>
             {project && <StatusBadge status={project.control === "paused" ? "paused" : project.status} />}
             <LiveIndicator connected={stream.connected} error={stream.error} />
           </div>
@@ -184,20 +185,22 @@ export function Workspace() {
               {item.id === "events" && events.length > 0 && (
                 <span className="rounded bg-indigo-500/15 px-1.5 py-0.5 text-[9px] tabular-nums text-indigo-300">{events.length}</span>
               )}
-              {isActive && <span className="absolute inset-x-2 bottom-0 h-0.5 rounded-t bg-indigo-400" />}
+              {isActive && <span className="absolute inset-x-2 bottom-0 h-0.5 rounded-t bg-gradient-to-r from-violet-400 via-indigo-400 to-cyan-300 shadow-[0_0_12px_rgba(129,140,248,0.9)]" />}
             </button>
           );
         })}
       </div>
 
-      <Panel title={activeTab?.label} subtitle={tabDescription(tab)} bodyClassName="p-5 min-h-[320px]">
-        {tab === "overview" && <OverviewTab projectId={projectId} project={project} />}
-        {tab === "tasks" && <TaskBoardTab projectId={projectId} />}
-        {tab === "files" && <FilesTab projectId={projectId} />}
-        {tab === "events" && <EventsTab projectId={projectId} connected={stream.connected} />}
-        {tab === "messages" && <MessagesTab projectId={projectId} />}
-        {tab === "approvals" && <ApprovalsTab projectId={projectId} compact />}
-        {tab === "git" && <GitHistoryTab projectId={projectId} />}
+      <Panel title={activeTab?.label} subtitle={tabDescription(tab)} bodyClassName="p-5 min-h-[320px]" beam>
+        <BlurFade key={tab} delay={0.02} duration={0.3} offset={6} blur="4px">
+          {tab === "overview" && <OverviewTab projectId={projectId} project={project} />}
+          {tab === "tasks" && <TaskBoardTab projectId={projectId} />}
+          {tab === "files" && <FilesTab projectId={projectId} />}
+          {tab === "events" && <EventsTab projectId={projectId} connected={stream.connected} />}
+          {tab === "messages" && <MessagesTab projectId={projectId} />}
+          {tab === "approvals" && <ApprovalsTab projectId={projectId} compact />}
+          {tab === "git" && <GitHistoryTab projectId={projectId} />}
+        </BlurFade>
       </Panel>
 
       <p className="mt-4 text-center text-[10px] text-zinc-700">

@@ -5,6 +5,9 @@ import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { ArrowLeftIcon, BoltIcon, CheckIcon, ChevronRightIcon, SparkIcon } from "@/components/Icons";
 import { ErrorBanner, Panel } from "@/components/ui";
+import { AuroraText } from "@/components/ui/aurora-text";
+import { BlurFade } from "@/components/ui/blur-fade";
+import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { PHASES } from "@/components/PhasePipeline";
 import { cn, titleize } from "@/lib/utils";
 import { api } from "@/services/api";
@@ -50,18 +53,26 @@ export default function NewProjectPage() {
         <ArrowLeftIcon className="h-3.5 w-3.5" /> Back to projects
       </Link>
 
-      <div className="mb-7">
-        <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-indigo-400">New project</p>
-        <h1 className="text-2xl font-semibold tracking-tight text-zinc-50 sm:text-[28px]">Describe what you want built.</h1>
-        <p className="mt-2 max-w-2xl text-[13px] leading-relaxed text-muted">
-          Your requirement becomes a full engineering plan. Specialized agents handle discovery, architecture, implementation, testing, review and delivery.
-        </p>
-      </div>
+      <BlurFade delay={0.05} offset={10}>
+        <div className="relative mb-7 overflow-hidden rounded-2xl border border-white/[0.07] bg-surface/50 p-6 sm:p-7">
+          <div className="pointer-events-none absolute -right-16 -top-20 h-64 w-64 rounded-full bg-violet-500/10 blur-[90px]" />
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_100%_at_0%_0%,rgba(99,102,241,0.12),transparent_70%)]" />
+          <p className="relative mb-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-indigo-300">New project · intake</p>
+          <h1 className="relative text-2xl font-semibold tracking-tight sm:text-[28px]">
+            <AuroraText colors={["#c4b5fd", "#a5b4fc", "#67e8f9", "#c4b5fd"]} speed={0.6}>
+              Describe what you want built.
+            </AuroraText>
+          </h1>
+          <p className="relative mt-2 max-w-2xl text-[13px] leading-relaxed text-muted">
+            Your requirement becomes a full engineering plan. Specialized agents handle discovery, architecture, implementation, testing, review and delivery.
+          </p>
+        </div>
+      </BlurFade>
 
       {error && <div className="mb-5"><ErrorBanner message={error} /></div>}
 
       <form onSubmit={submit} className="grid gap-5 lg:grid-cols-[1.5fr_1fr]">
-        <Panel title="Project requirement" subtitle="Be specific about features, constraints and desired outcomes">
+        <Panel title="Project requirement" subtitle="Be specific about features, constraints and desired outcomes" beam>
           <div className="space-y-5">
             <div>
               <label htmlFor="requirement" className="mb-2 block text-xs font-medium text-zinc-300">
@@ -121,20 +132,24 @@ export default function NewProjectPage() {
               </span>
             </button>
 
-            <button
+            <ShimmerButton
               type="submit"
               disabled={!valid || submitting}
-              className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-indigo-400/50 bg-indigo-500 px-4 py-3 text-[13px] font-semibold text-white shadow-[0_0_26px_-8px_rgba(99,102,241,0.95)] transition-colors hover:bg-indigo-400 disabled:cursor-not-allowed disabled:opacity-40"
+              shimmerColor="#c7d2fe"
+              shimmerDuration="3.5s"
+              background="linear-gradient(135deg, #4f46e5, #7c3aed 55%, #2563eb)"
+              className="w-full py-3 text-[13px] font-semibold shadow-[0_10px_30px_-12px_rgba(99,102,241,0.9)] disabled:cursor-not-allowed disabled:opacity-40"
             >
               {submitting ? (
-                <><span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" /> Creating project…</>
+                <><span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" /> Creating project…</>
               ) : (
-                <><SparkIcon className="h-4 w-4" /> Create project {autoStart ? "& start agents" : "without starting"}</>
+                <><SparkIcon className="mr-2 h-4 w-4" /> Create project {autoStart ? "& start agents" : "without starting"}</>
               )}
-            </button>
+            </ShimmerButton>
           </div>
         </Panel>
 
+        <BlurFade delay={0.12} offset={12}>
         <div className="space-y-5">
           <Panel title="Try an example" subtitle="Click to fill the requirement field">
             <div className="space-y-2">
@@ -169,6 +184,7 @@ export default function NewProjectPage() {
             </p>
           </Panel>
         </div>
+        </BlurFade>
       </form>
     </div>
   );
