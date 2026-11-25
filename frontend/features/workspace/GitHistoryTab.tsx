@@ -2,6 +2,7 @@
 
 import { GitIcon } from "@/components/Icons";
 import { EmptyState, ErrorBanner, LoadingState } from "@/components/ui";
+import { MagicCard } from "@/components/ui/magic-card";
 import { usePolling } from "@/hooks/usePolling";
 import { api } from "@/services/api";
 
@@ -17,7 +18,7 @@ export function GitHistoryTab({ projectId }: { projectId: string }) {
       ) : history.length === 0 ? (
         <EmptyState icon={<GitIcon className="h-5 w-5" />} title="No commits yet" description="Agent commits to the project workspace will appear here." />
       ) : (
-        <div className="overflow-hidden rounded-lg border border-line">
+        <MagicCard gradientColor="rgba(251,191,36,0.08)" className="overflow-hidden rounded-lg">
           <div className="flex items-center justify-between border-b border-line bg-elevated/40 px-4 py-2.5">
             <span className="text-[11px] font-medium text-zinc-300">{history.length} commits</span>
             <span className="font-mono text-[10px] text-zinc-600">git log --oneline</span>
@@ -39,7 +40,7 @@ export function GitHistoryTab({ projectId }: { projectId: string }) {
               );
             })}
           </ul>
-        </div>
+        </MagicCard>
       )}
     </div>
   );

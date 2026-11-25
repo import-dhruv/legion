@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ActivityIcon, SearchIcon } from "@/components/Icons";
 import { EmptyState, ErrorBanner, LiveIndicator, LoadingState } from "@/components/ui";
+import { AnimatedSpan, Terminal } from "@/components/ui/terminal";
 import { usePolling } from "@/hooks/usePolling";
 import { useAppStore } from "@/lib/store";
 import type { FeedEvent } from "@/lib/types";
@@ -72,44 +73,47 @@ export function EventsTab({ projectId, connected }: { projectId: string; connect
 
       {history.error && <div className="mb-4"><ErrorBanner message={history.error} onRetry={history.refresh} /></div>}
 
-      <div className="overflow-hidden rounded-xl border border-line bg-[#07080b]">
-        <div className="flex items-center gap-2 border-b border-line bg-panel/70 px-4 py-2.5">
-          <span className="h-2.5 w-2.5 rounded-full bg-rose-500/70" />
-          <span className="h-2.5 w-2.5 rounded-full bg-amber-400/70" />
-          <span className="h-2.5 w-2.5 rounded-full bg-emerald-400/70" />
-          <span className="ml-2 font-mono text-[10px] text-zinc-500">organization://{projectId.slice(0, 12)}/events</span>
-        </div>
-        <div ref={scrollRef} className="max-h-[520px] min-h-[300px] overflow-y-auto p-3 font-mono">
+      <div ref={scrollRef} className="max-h-[520px] min-h-[300px] overflow-y-auto rounded-xl">
+        <Terminal
+          sequence={false}
+          className="max-w-none rounded-xl border-white/[0.07] bg-[#07080b] shadow-panel"
+        >
+          <AnimatedSpan className="mb-1 font-mono text-[10px] text-zinc-500">
+            organization://{projectId.slice(0, 12)}/events · {events.length} records
+          </AnimatedSpan>
           {history.loading && events.length === 0 ? (
-            <LoadingState label="Loading event history…" />
+            <AnimatedSpan><LoadingState label="Loading event history…" /></AnimatedSpan>
           ) : filtered.length === 0 ? (
-            <EmptyState icon={<ActivityIcon className="h-5 w-5" />} title={query ? "No matching events" : "No events yet"} description="Agent activity streams here in real time." />
+            <AnimatedSpan>
+              <EmptyState icon={<ActivityIcon className="h-5 w-5" />} title={query ? "No matching events" : "No events yet"} description="Agent activity streams here in real time." />
+            </AnimatedSpan>
           ) : (
-            <div className="space-y-0.5">
-              {filtered.map((event) => {
-                const tone = toneClasses[eventTone(event.type)];
-                const dataEntries = Object.entries(event.data);
-                return (
-                  <div key={event.key} className="group flex gap-3 rounded px-2 py-1.5 hover:bg-white/[0.03]">
-                    <time className="shrink-0 text-[10px] tabular-nums text-zinc-700">{formatTime(event.timestamp)}</time>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                        <span className={cn("text-[10px] font-semibold uppercase tracking-wider", tone.text)}>[{titleize(event.type)}]</span>
-                        <span className="text-[10px] text-cyan-400/80">{event.agent_id}</span>
-                        {event.task_id && <span className="text-[9px] text-zinc-700">{event.task_id.slice(0, 10)}</span>}
-                        {event.live && <span className="rounded bg-indigo-500/15 px-1 text-[8px] uppercase text-indigo-300">live</span>}
-                      </div>
-                      <p className="mt-0.5 break-words text-[11px] leading-relaxed text-zinc-300">{event.message || "—"}</p>
-                      {dataEntries.length > 0 && (
-                        <p className="mt-0.5 break-all text-[10px] text-zinc-600">{safeJson(event.data)}</p>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+            filtered.map((event) => {
+              const tone = toneClasses[eventTone(event.type)];
+              const dataEntries = Object.entries(event.data);
+              return (
+                <AnimatedSpan
+                  key={event.key}
+                  className="grid grid-cols-[auto_1fr] gap-x-3 rounded px-2 py-1.5 font-mono hover:bg-white/[0.03]"
+                >
+                  <time className="text-[10px] tabular-nums text-zinc-700">{formatTime(event.timestamp)}</time>
+                  <span className="min-w-0">
+                    <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                      <span className={cn("text-[10px] font-semibold uppercase tracking-wider", tone.text)}>[{titleize(event.type)}]</span>
+                      <span className="text-[10px] text-cyan-400/80">{event.agent_id}</span>
+                      {event.task_id && <span className="text-[9px] text-zinc-700">{event.task_id.slice(0, 10)}</span>}
+                      {event.live && <span className="rounded bg-indigo-500/15 px-1 text-[8px] uppercase text-indigo-300">live</span>}
+                    </span>
+                    <span className="mt-0.5 block break-words text-[11px] leading-relaxed text-zinc-300">{event.message || "—"}</span>
+                    {dataEntries.length > 0 && (
+                      <span className="mt-0.5 block break-all text-[10px] text-zinc-600">{safeJson(event.data)}</span>
+                    )}
+                  </span>
+                </AnimatedSpan>
+              );
+            })
           )}
-        </div>
+        </Terminal>
       </div>
     </div>
   );

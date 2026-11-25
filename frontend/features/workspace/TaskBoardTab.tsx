@@ -3,6 +3,8 @@
 import { useMemo, useState } from "react";
 import { AlertIcon, CheckIcon, ChevronRightIcon, SearchIcon } from "@/components/Icons";
 import { EmptyState, ErrorBanner, LoadingState } from "@/components/ui";
+import { BlurFade } from "@/components/ui/blur-fade";
+import { MagicCard } from "@/components/ui/magic-card";
 import { usePolling } from "@/hooks/usePolling";
 import type { Task } from "@/lib/types";
 import { cn, shortId, statusTone, titleize, toneClasses } from "@/lib/utils";
@@ -85,11 +87,12 @@ export function TaskBoardTab({ projectId }: { projectId: string }) {
         <EmptyState icon={<CheckIcon className="h-5 w-5" />} title="No tasks yet" description="Tasks appear here as the organization plans the work." />
       ) : (
         <div className="flex gap-3 overflow-x-auto pb-3">
-          {COLUMNS.map((column) => {
+          {COLUMNS.map((column, columnIndex) => {
             const items = grouped[column.id] ?? [];
             const color = toneClasses[column.tone];
             return (
-              <div key={column.id} className="flex w-[270px] shrink-0 flex-col rounded-xl border border-line bg-canvas/40">
+              <BlurFade key={column.id} delay={columnIndex * 0.05} offset={10} blur="5px">
+              <div className="flex w-[270px] shrink-0 flex-col rounded-xl border border-white/[0.06] bg-gradient-to-b from-white/[0.025] to-transparent">
                 <div className="flex items-center justify-between border-b border-line/70 px-3.5 py-3">
                   <span className="flex items-center gap-2 text-xs font-semibold text-zinc-200">
                     <span className={cn("h-2 w-2 rounded-full", color.dot)} />
@@ -100,7 +103,7 @@ export function TaskBoardTab({ projectId }: { projectId: string }) {
                 <div className="flex-1 space-y-2 p-2.5">
                   {items.length === 0 && <p className="px-1 py-6 text-center text-[11px] text-zinc-700">No tasks</p>}
                   {items.map((task) => (
-                    <article key={task.id} className="rounded-lg border border-line bg-panel/80 p-3 transition-colors hover:border-zinc-600/70">
+                    <MagicCard key={task.id} gradientColor="rgba(129,140,248,0.10)" className="rounded-lg p-3 transition-transform duration-200 hover:-translate-y-px">
                       <div className="flex items-start justify-between gap-2">
                         <h4 className="text-[12px] font-medium leading-snug text-zinc-100">{task.title}</h4>
                         <span className={cn("shrink-0 rounded px-1.5 py-0.5 font-mono text-[9px]", toneClasses[statusTone(task.priority > 6 ? "blocked" : "running")].text, "bg-elevated")}>
@@ -165,10 +168,11 @@ export function TaskBoardTab({ projectId }: { projectId: string }) {
                       <p className="mt-2 truncate text-[9px] text-zinc-700">
                         {agentName(task.assigned_agent)} · {task.logs.length} log entries
                       </p>
-                    </article>
+                    </MagicCard>
                   ))}
                 </div>
               </div>
+              </BlurFade>
             );
           })}
         </div>

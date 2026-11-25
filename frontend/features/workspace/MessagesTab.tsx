@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { ChevronDownIcon, MessageIcon, SearchIcon } from "@/components/Icons";
 import { EmptyState, ErrorBanner, JsonBlock, LoadingState } from "@/components/ui";
+import { MagicCard } from "@/components/ui/magic-card";
 import { usePolling } from "@/hooks/usePolling";
 import type { Message } from "@/lib/types";
 import { cn, formatTime, titleize } from "@/lib/utils";
@@ -47,7 +48,8 @@ export function MessagesTab({ projectId }: { projectId: string }) {
       ) : filtered.length === 0 ? (
         <EmptyState icon={<MessageIcon className="h-5 w-5" />} title="No messages yet" description="Agent-to-agent requests, responses and failure reports appear here." />
       ) : (
-        <div className="overflow-x-auto rounded-lg border border-line">
+        <MagicCard gradientColor="rgba(129,140,248,0.08)" className="overflow-hidden rounded-lg">
+        <div className="overflow-x-auto">
           <table className="w-full min-w-[720px] text-left">
             <thead>
               <tr className="border-b border-line bg-elevated/50 text-[10px] uppercase tracking-wider text-zinc-600">
@@ -88,6 +90,7 @@ export function MessagesTab({ projectId }: { projectId: string }) {
             </tbody>
           </table>
         </div>
+        </MagicCard>
       )}
     </div>
   );

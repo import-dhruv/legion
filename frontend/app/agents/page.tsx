@@ -16,6 +16,11 @@ import {
   UsersIcon,
 } from "@/components/Icons";
 import { EmptyState, ErrorBanner, LoadingState, PageHeader, Panel, StatusBadge } from "@/components/ui";
+import { BlurFade } from "@/components/ui/blur-fade";
+import { MagicCard } from "@/components/ui/magic-card";
+import { NumberTicker } from "@/components/ui/number-ticker";
+import { ShineBorder } from "@/components/ui/shine-border";
+import { SparklesText } from "@/components/ui/sparkles-text";
 import { usePolling } from "@/hooks/usePolling";
 import type { Agent } from "@/lib/types";
 import { cn, shortId, statusTone, titleize, toneClasses, type Tone } from "@/lib/utils";
@@ -49,7 +54,19 @@ function AgentCard({ agent, agents }: { agent: Agent; agents: Agent[] }) {
   const initial = agent.name.charAt(0).toUpperCase();
 
   return (
-    <article className="group flex h-full flex-col rounded-xl border border-line bg-panel/70 p-4 shadow-panel transition-all hover:-translate-y-0.5 hover:border-zinc-600/70 hover:bg-panel">
+    <MagicCard
+      gradientColor="rgba(129,140,248,0.12)"
+      gradientFrom="#a78bfa"
+      gradientTo="#22d3ee"
+      className="group flex h-full flex-col rounded-xl p-4 shadow-panel transition-transform duration-300 hover:-translate-y-0.5"
+    >
+      <ShineBorder
+        borderWidth={1}
+        duration={9}
+        shineColor={["#a78bfa", "#22d3ee", "#818cf8", "#a78bfa"]}
+        className="opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+      />
+      <div className="relative z-40 flex flex-1 flex-col">
       <div className="flex items-start gap-3">
         <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-indigo-400/25 bg-gradient-to-br from-indigo-500/25 to-violet-600/10 text-sm font-bold text-indigo-200">
           {initial}
@@ -112,10 +129,11 @@ function AgentCard({ agent, agents }: { agent: Agent; agents: Agent[] }) {
         )}
       </div>
 
-      <p className="mt-3 truncate border-t border-line/70 pt-2 font-mono text-[10px] text-zinc-700" title={agent.id}>
+      <p className="mt-3 truncate border-t border-white/[0.06] pt-2 font-mono text-[10px] text-zinc-700" title={agent.id}>
         {agent.id}
       </p>
-    </article>
+      </div>
+    </MagicCard>
   );
 }
 
@@ -123,7 +141,7 @@ function OrgTree({ agents }: { agents: Agent[] }) {
   const cto = agents.find((agent) => agent.id === "cto");
   const directReports = agents.filter((agent) => agent.reports_to === "cto");
   return (
-    <Panel title="Reporting structure" subtitle="Human CTO → executive leadership → specialized departments" bodyClassName="p-6">
+    <Panel title="Reporting structure" subtitle="Human CTO → executive leadership → specialized departments" bodyClassName="p-6" beam>
       <div className="flex flex-col items-center">
         <div className="w-full max-w-xs rounded-xl border border-indigo-400/30 bg-gradient-to-br from-indigo-500/15 to-violet-500/5 px-4 py-3 text-center">
           <p className="text-[10px] uppercase tracking-[0.16em] text-indigo-300/70">Human CTO</p>
@@ -178,7 +196,7 @@ export default function AgentsPage() {
     <div className="animate-fade-in">
       <PageHeader
         eyebrow="Organization"
-        title="The agent org chart"
+        title={<SparklesText sparklesCount={6} colors={{ first: "#a78bfa", second: "#67e8f9" }} className="text-2xl font-semibold tracking-tight sm:text-[28px]">The agent org chart</SparklesText>}
         description="A hierarchical engineering organization — every specialist has a role, a reporting line, a model tier and a scoped set of tool permissions."
         action={
           <div className="flex items-center gap-2 rounded-lg border border-line bg-panel px-3 py-2 text-xs text-zinc-400">
@@ -204,7 +222,7 @@ export default function AgentsPage() {
             <div key={item.label} className="flex items-center justify-between rounded-xl border border-line bg-panel/80 p-4">
               <div>
                 <p className="text-[10px] uppercase tracking-[0.14em] text-muted">{item.label}</p>
-                <p className="mt-1.5 text-xl font-semibold tabular-nums text-zinc-50">{item.value}</p>
+                <p className="mt-1.5 text-xl font-semibold tabular-nums text-zinc-50"><NumberTicker value={item.value} className="text-xl font-semibold tabular-nums text-zinc-50" /></p>
               </div>
               <Icon className={cn("h-5 w-5", color.text)} />
             </div>
@@ -238,13 +256,14 @@ export default function AgentsPage() {
             <Panel className="mt-4"><EmptyState icon={<SearchIcon className="h-5 w-5" />} title="No matching agents" description="Try a different name, role or department." /></Panel>
           ) : (
             <div className="mt-4 space-y-5">
-              {DEPARTMENTS.map((department) => {
+              {DEPARTMENTS.map((department, index) => {
                 const members = byDepartment[department.id] ?? [];
                 if (members.length === 0) return null;
                 const Icon = department.icon;
                 const color = toneClasses[department.tone];
                 return (
-                  <section key={department.id} className="overflow-hidden rounded-xl border border-line bg-surface/60">
+                  <BlurFade key={department.id} delay={0.04 + index * 0.05} offset={10} blur="6px">
+                  <section className="overflow-hidden rounded-xl border border-white/[0.06] bg-surface/60">
                     <header className="flex flex-wrap items-center gap-3 border-b border-line/70 bg-panel/40 px-4 py-3">
                       <span className={cn("flex h-8 w-8 items-center justify-center rounded-lg border", color.bg, color.border, color.text)}>
                         <Icon className="h-4 w-4" />
@@ -261,6 +280,7 @@ export default function AgentsPage() {
                       {members.map((agent) => <AgentCard key={agent.id} agent={agent} agents={agents} />)}
                     </div>
                   </section>
+                  </BlurFade>
                 );
               })}
               {Object.keys(byDepartment).some((key) => !DEPARTMENTS.some((department) => department.id === key)) && (

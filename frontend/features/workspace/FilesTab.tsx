@@ -3,6 +3,8 @@
 import { useMemo, useState } from "react";
 import { ChevronDownIcon, ChevronRightIcon, FileIcon, FolderIcon } from "@/components/Icons";
 import { EmptyState, ErrorBanner, LoadingState } from "@/components/ui";
+import { BlurFade } from "@/components/ui/blur-fade";
+import { MagicCard } from "@/components/ui/magic-card";
 import { usePolling } from "@/hooks/usePolling";
 import { cn } from "@/lib/utils";
 import { api } from "@/services/api";
@@ -124,7 +126,7 @@ export function FilesTab({ projectId }: { projectId: string }) {
         <EmptyState icon={<FolderIcon className="h-5 w-5" />} title="Workspace is empty" description="Generated files appear here as agents implement the project." />
       ) : (
         <div className="grid gap-4 lg:grid-cols-[280px_1fr]">
-          <div className="rounded-lg border border-line bg-canvas/40 p-2">
+          <MagicCard gradientColor="rgba(129,140,248,0.10)" className="rounded-lg p-2">
             <p className="px-2 pb-2 pt-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-zinc-600">
               {paths.length} file{paths.length === 1 ? "" : "s"}
             </p>
@@ -133,9 +135,10 @@ export function FilesTab({ projectId }: { projectId: string }) {
                 <TreeItem key={node.path} node={node} depth={0} selected={selected} onSelect={(path) => void selectFile(path)} />
               ))}
             </ul>
-          </div>
+          </MagicCard>
 
-          <div className="min-w-0 overflow-hidden rounded-lg border border-line bg-canvas/60">
+          <BlurFade delay={0.08} offset={10}>
+          <div className="min-w-0 overflow-hidden rounded-lg border border-white/[0.07] bg-canvas/60 shadow-panel">
             <div className="flex items-center justify-between gap-3 border-b border-line px-4 py-2.5">
               <span className="truncate font-mono text-[11px] text-zinc-300">{selected ?? "Select a file to view its contents"}</span>
               {content !== null && <span className="shrink-0 text-[10px] text-zinc-600">{content.split("\n").length} lines</span>}
@@ -157,6 +160,7 @@ export function FilesTab({ projectId }: { projectId: string }) {
               </div>
             )}
           </div>
+          </BlurFade>
         </div>
       )}
     </div>

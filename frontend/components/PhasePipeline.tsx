@@ -26,25 +26,40 @@ export function PhasePipeline({
   const isComplete = currentPhase === "completed" || currentPhase === "verified";
 
   return (
-    <div className="flex items-stretch gap-1.5 overflow-x-auto pb-1">
+    <div className="flex items-stretch gap-1.5 overflow-x-auto pb-2">
       {PHASES.map((phase, index) => {
         const done = isComplete || (currentIndex >= 0 && index < currentIndex);
         const active = !isComplete && (currentIndex === index || (currentIndex < 0 && index === 0));
-        const tone = done ? "bg-emerald-400" : active ? "bg-indigo-400 animate-pulse-soft" : "bg-zinc-800";
         const count = counts?.[phase];
         return (
           <div key={phase} className="min-w-[86px] flex-1">
-            <div className={cn("h-1.5 rounded-full transition-colors duration-500", tone)} />
+            <div
+              className={cn(
+                "relative h-1.5 overflow-hidden rounded-full transition-all duration-700",
+                done ? "bg-emerald-500/25" : active ? "bg-indigo-500/25" : "bg-zinc-800/80",
+              )}
+            >
+              <div
+                className={cn(
+                  "absolute inset-y-0 left-0 w-full rounded-full transition-transform duration-700",
+                  done
+                    ? "bg-gradient-to-r from-emerald-500 to-emerald-300 shadow-[0_0_12px_rgba(52,211,153,0.6)]"
+                    : active
+                      ? "bg-gradient-to-r from-indigo-500 via-violet-400 to-cyan-300 shadow-[0_0_14px_rgba(129,140,248,0.7)] animate-pulse-soft"
+                      : "bg-transparent",
+                )}
+              />
+            </div>
             <div className="mt-2.5 flex items-center gap-1.5">
               <span
                 className={cn(
-                  "h-1.5 w-1.5 rounded-full",
-                  done ? "bg-emerald-400" : active ? "bg-indigo-400" : "bg-zinc-700",
+                  "h-1.5 w-1.5 rounded-full transition-colors",
+                  done ? "bg-emerald-400" : active ? "bg-indigo-300 shadow-[0_0_8px_rgba(129,140,248,0.9)]" : "bg-zinc-700",
                 )}
               />
               <p
                 className={cn(
-                  "truncate text-[10px] font-medium",
+                  "truncate text-[10px] font-medium transition-colors",
                   active ? "text-indigo-200" : done ? "text-zinc-400" : "text-zinc-600",
                 )}
                 title={titleize(phase)}

@@ -64,8 +64,7 @@ export const statusTone = (status: string): Tone => {
   return "zinc";
 };
 
-export const cn = (...values: Array<string | false | null | undefined>): string =>
-  values.filter(Boolean).join(" ");
+export { cn } from "cn";
 
 export const titleize = (value: string): string =>
   value
