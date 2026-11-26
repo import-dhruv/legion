@@ -69,7 +69,7 @@ function AgentCard({ agent, agents }: { agent: Agent; agents: Agent[] }) {
       gradientColor="rgba(0, 0, 0,0.12)"
       gradientFrom="#737373"
       gradientTo="#171717"
-      className="group interactive-surface flex h-full flex-col rounded-xl p-4 shadow-panel"
+      className="group interactive-surface flex h-full flex-col rounded-xl shadow-panel"
     >
       <ShineBorder
         borderWidth={1}
@@ -77,7 +77,7 @@ function AgentCard({ agent, agents }: { agent: Agent; agents: Agent[] }) {
         shineColor={["#a3a3a3", "#737373", "#a3a3a3", "#525252"]}
         className="opacity-0 transition-opacity duration-500 group-hover:opacity-100 group-focus-within:opacity-100"
       />
-      <div className="relative z-40 flex flex-1 flex-col">
+      <div className="relative z-40 flex flex-1 flex-col p-4">
       <div className="flex items-start gap-2.5">
         <div className="relative shrink-0">
           <Avatar className="size-10 rounded-xl border border-border bg-gradient-to-br from-muted to-accent">
@@ -109,15 +109,15 @@ function AgentCard({ agent, agents }: { agent: Agent; agents: Agent[] }) {
       </div>
 
       <div className="mt-2.5 space-y-1.5 border-t border-line/70 pt-2.5 text-[11px]">
-        <div className="flex items-start justify-between gap-2">
+        <div className="flex items-start justify-between gap-3">
           <span className="shrink-0 text-muted-foreground">Reports to</span>
-          <span className="truncate text-right text-foreground">
+          <span className="min-w-0 flex-1 break-words text-right leading-snug text-foreground">
             {manager ? `${manager.name} · ${manager.role}` : "Human CTO"}
           </span>
         </div>
-        <div className="flex items-start justify-between gap-2">
+        <div className="flex items-start justify-between gap-3">
           <span className="shrink-0 text-muted-foreground">Current task</span>
-          <span className={cn("truncate text-right font-mono", agent.current_task_id ? "text-muted-foreground" : "text-muted-foreground")}>
+          <span className="min-w-0 flex-1 break-words text-right font-mono leading-snug text-muted-foreground">
             {agent.current_task_id ? shortId(agent.current_task_id, 14) : "unassigned"}
           </span>
         </div>
