@@ -32,6 +32,7 @@ class Settings(BaseSettings):
     llm_provider: Literal["openai-compatible", "mock"] = "openai-compatible"
     llm_provider_api_key: SecretStr = SecretStr("")
     llm_provider_base_url: str = "https://api.openai.com/v1"
+    llm_auth_header: Literal["authorization", "api-subscription-key"] = "authorization"
     llm_model: str = "gpt-4o-mini"
     llm_fallback_model: str = "gpt-4o"
     llm_strong_model: str = "gpt-4o"
