@@ -16,6 +16,7 @@ MODEL_CAPABILITIES = {
     "gpt-4o": {"tools": True, "json": True, "vision": True, "context": 128000},
     "gpt-4o-mini": {"tools": True, "json": True, "vision": True, "context": 128000},
     "claude-sonnet-4": {"tools": True, "json": True, "vision": True, "context": 200000},
+    "sarvam-105b": {"tools": False, "json": False, "vision": False, "context": 128000},
 }
 
 
@@ -29,13 +30,18 @@ def capabilities(model: str) -> dict[str, Any]:
 class OpenAICompatibleProvider:
     """Talks to any OpenAI-compatible endpoint using one shared API key."""
 
-    def __init__(self, api_key: str, base_url: str, pricing: Pricing | None = None):
+    def __init__(self, api_key: str, base_url: str, pricing: Pricing | None = None,
+                 auth_header: str = "authorization"):
         self.api_key = api_key
         self.base_url = base_url.rstrip("/")
         self.pricing = pricing or Pricing()
+        headers = {"Content-Type": "application/json"}
+        if auth_header == "api-subscription-key":
+            headers["api-subscription-key"] = api_key
+        else:
+            headers["Authorization"] = f"Bearer {api_key}"
         self._client = httpx.AsyncClient(
-            timeout=httpx.Timeout(settings.llm_timeout_seconds),
-            headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+            timeout=httpx.Timeout(settings.llm_timeout_seconds), headers=headers,
         )
 
     async def close(self) -> None:
@@ -50,11 +56,14 @@ class OpenAICompatibleProvider:
         }
         if request.max_tokens:
             payload["max_tokens"] = request.max_tokens
-        if request.response_schema:
+        caps = capabilities(payload["model"])
+        # Not every OpenAI-compatible provider supports native JSON mode / tools.
+        # Prompt instructions still ask for JSON; we only omit unsupported params.
+        if request.response_schema and caps.get("json"):
             payload["response_format"] = {"type": "json_object"}
-        if request.tools:
+        if request.tools and caps.get("tools"):
             payload["tools"] = request.tools
-        if settings.llm_enable_prompt_cache and capabilities(payload["model"]).get("json"):
+        if settings.llm_enable_prompt_cache and caps.get("json"):
             payload.setdefault("extra_body", {})["prompt_cache_hint"] = True
 
         last_error = ""
@@ -66,6 +75,13 @@ class OpenAICompatibleProvider:
         ):
             with attempt:
                 resp = await self._client.post(f"{self.base_url}/chat/completions", json=payload)
+                if resp.status_code in (401, 403):
+                    # Auth errors are deterministic: never burn retries on them.
+                    return LLMResponse(
+                        content="", model=payload["model"], request_id=request.request_id,
+                        success=False, latency_ms=(time.perf_counter() - started) * 1000,
+                        error=f"Authentication failed ({resp.status_code}): check LLM_PROVIDER_API_KEY / base URL",
+                    )
                 if resp.status_code == 429 or resp.status_code >= 500:
                     raise httpx.HTTPStatusError(f"retryable {resp.status_code}", request=resp.request, response=resp)
                 resp.raise_for_status()

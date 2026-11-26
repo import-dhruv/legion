@@ -14,6 +14,10 @@ DEFAULT_PRICING: dict[str, tuple[float, float]] = {
     "gpt-4.1-mini": (0.4, 1.6),
     "claude-sonnet-4": (3.0, 15.0),
     "claude-haiku-3.5": (0.8, 4.0),
+    # Sarvam AI, ₹10 input / ₹25 output per 1M tokens (~₹83/USD).
+    "sarvam-105b": (0.12, 0.30),
+    "sarvam-105b-conversations": (0.12, 0.30),
+    "sarvam-prism": (0.05, 0.0),
 }
 
 

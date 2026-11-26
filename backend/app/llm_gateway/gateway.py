@@ -47,6 +47,7 @@ class LLMGateway:
                 settings.llm_provider_api_key.get_secret_value(),
                 settings.llm_provider_base_url,
                 self.pricing,
+                settings.llm_auth_header,
             )
         )
         self.fallback = fallback_provider
