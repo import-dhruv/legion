@@ -88,14 +88,14 @@ export function TaskBoardTab({ projectId }: { projectId: string }) {
       ) : tasks.length === 0 ? (
         <EmptyState icon={<CheckIcon className="h-5 w-5" />} title="No tasks yet" description="Tasks appear here as the organization plans the work." />
       ) : (
-        <div className="flex gap-3 overflow-x-auto pb-3">
+        <div className="no-scrollbar flex flex-col gap-3 sm:flex-row sm:overflow-x-auto sm:pb-3">
           {COLUMNS.map((column, columnIndex) => {
             const items = grouped[column.id] ?? [];
             const color = toneClasses[column.tone];
             return (
               <BlurFade key={column.id} delay={columnIndex * 0.05} offset={10} blur="5px">
-              <div className="flex w-[270px] shrink-0 flex-col rounded-xl border border-black/[0.06] bg-gradient-to-b from-black/[0.025] to-transparent">
-                <div className="flex items-center justify-between border-b border-line/70 px-3.5 py-3">
+              <div className="flex w-full shrink-0 flex-col rounded-xl border border-black/[0.06] bg-gradient-to-b from-black/[0.025] to-transparent sm:w-[280px]">
+                <div className="flex items-center justify-between border-b border-line/70 px-3 py-3">
                   <span className="flex items-center gap-2 text-xs font-semibold text-foreground">
                     <span className={cn("h-2 w-2 rounded-full", color.dot)} />
                     {column.label}

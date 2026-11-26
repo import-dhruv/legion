@@ -50,7 +50,7 @@ export function Panel({
       )}
       <Card className="gap-0 rounded-[inherit] border-0 bg-transparent py-0 shadow-none ring-0">
         {(title || action) && (
-          <CardHeader className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-5 py-4">
+          <CardHeader className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-4 py-3 sm:px-5 sm:py-4">
             <div className="min-w-0">
               {title && <CardTitle className="text-sm font-semibold tracking-tight">{title}</CardTitle>}
               {subtitle && <CardDescription className="mt-1 text-xs">{subtitle}</CardDescription>}
@@ -58,7 +58,7 @@ export function Panel({
             {action}
           </CardHeader>
         )}
-        <CardContent className={bodyClassName ?? "p-5"}>{children}</CardContent>
+        <CardContent className={bodyClassName ?? "p-4 sm:p-5"}>{children}</CardContent>
       </Card>
     </MagicCard>
   );
@@ -128,7 +128,7 @@ export function KpiCard({
       gradientColor="rgba(0,0,0,0.07)"
       gradientFrom="#a3a3a3"
       gradientTo="#525252"
-      className="interactive-surface min-h-[132px] rounded-xl shadow-panel"
+      className="interactive-surface min-h-32 rounded-xl shadow-panel"
     >
       {beam && (
         <BorderBeam
@@ -141,14 +141,14 @@ export function KpiCard({
         />
       )}
       <Card className="gap-0 rounded-[inherit] border-0 bg-transparent py-0 shadow-none ring-0">
-        <CardContent className="relative p-5">
+        <CardContent className="relative p-4 sm:p-5">
           <div className={cn("pointer-events-none absolute -right-8 -top-8 h-28 w-28 rounded-full blur-3xl transition-opacity duration-500 group-hover:opacity-80", color.bg)} />
-          <div className="relative flex items-start justify-between gap-4">
+          <div className="relative flex items-start justify-between gap-3">
             <div className="min-w-0">
               <CardDescription className="text-[10px] font-semibold uppercase tracking-[0.16em]">
                 {label}
               </CardDescription>
-              <p className="mt-3 flex items-baseline gap-0.5 text-2xl font-semibold tracking-tight text-foreground">
+              <p className="mt-2 flex items-baseline gap-0.5 text-2xl font-semibold tracking-tight text-foreground sm:mt-3">
                 {prefix && <span className="text-lg text-muted-foreground">{prefix}</span>}
                 {tickerValue !== undefined ? (
                   <NumberTicker
@@ -162,7 +162,7 @@ export function KpiCard({
                 )}
                 {suffix && <span className="text-lg text-muted-foreground">{suffix}</span>}
               </p>
-              {hint && <p className="mt-2 truncate text-xs text-muted-foreground">{hint}</p>}
+              {hint && <p className="mt-2 line-clamp-2 text-xs text-muted-foreground">{hint}</p>}
             </div>
             <span className={cn("flex h-9 w-9 items-center justify-center rounded-lg border", color.bg, color.border, color.text)}>
               {icon}
@@ -242,7 +242,7 @@ export function EmptyState({
   action?: ReactNode;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center gap-3 px-4 py-14 text-center">
+    <div className="flex flex-col items-center justify-center gap-3 px-4 py-10 text-center sm:py-14">
       {icon && (
         <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-border bg-muted text-foreground shadow-sm">
           {icon}
@@ -284,7 +284,7 @@ export function ErrorBanner({ message, onRetry }: { message: string; onRetry?: (
 
 export function LoadingState({ label = "Loading…" }: { label?: string }) {
   return (
-    <div className="flex flex-col items-center justify-center gap-3 py-16 text-xs text-muted-foreground">
+    <div className="flex flex-col items-center justify-center gap-3 py-12 text-xs text-muted-foreground sm:py-16">
       <div className="flex w-full max-w-xs flex-col gap-2">
         <Skeleton className="h-3 w-3/4" />
         <Skeleton className="h-3 w-1/2" />
@@ -319,7 +319,7 @@ export function PageHeader({
   action?: ReactNode;
 }) {
   return (
-    <div className="mb-7 flex flex-wrap items-end justify-between gap-4">
+    <div className="mb-5 flex flex-wrap items-end justify-between gap-4 sm:mb-6">
       <div>
         {eyebrow && (
           <AnimatedGradientText
@@ -333,7 +333,7 @@ export function PageHeader({
         )}
         <h1 className="text-2xl font-semibold tracking-tight text-foreground sm:text-[28px]">{title}</h1>
         {description && <p className="mt-2 max-w-2xl text-[13px] leading-relaxed text-muted-foreground">{description}</p>}
-        <Separator className="mt-5 w-16 bg-foreground/70" />
+        <Separator className="mt-4 w-16 bg-foreground/70" />
       </div>
       {action}
     </div>

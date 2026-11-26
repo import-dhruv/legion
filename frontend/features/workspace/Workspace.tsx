@@ -120,11 +120,11 @@ export function Workspace() {
 
   return (
     <div>
-      <Link href="/projects" className="mb-5 inline-flex items-center gap-2 text-xs text-muted-foreground transition-colors hover:text-foreground">
+      <Link href="/projects" className="mb-4 inline-flex items-center gap-2 text-xs text-muted-foreground transition-colors hover:text-foreground">
         <ArrowLeftIcon className="h-3.5 w-3.5" /> All projects
       </Link>
 
-      <Reveal className="mb-6">
+      <Reveal className="mb-5">
       <div className="flex flex-wrap items-start justify-between gap-5">
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2.5">
@@ -140,7 +140,7 @@ export function Workspace() {
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:justify-end">
           {project?.control === "paused" && (
             <Button variant="primary" onClick={() => void runControl("resume")} disabled={busy !== null}>
               <PlayIcon className="h-3.5 w-3.5" /> Resume
@@ -228,7 +228,7 @@ export function Workspace() {
       <Tabs value={tab} onValueChange={(value) => setTab(value as TabId)} className="gap-0">
         <TabsList
           variant="line"
-          className="mb-5 flex h-auto w-full justify-start gap-1 overflow-x-auto rounded-none border-b border-border p-0"
+          className="no-scrollbar mb-4 flex h-auto w-full justify-start gap-1 overflow-x-auto rounded-none border-b border-border p-0"
         >
           {TABS.map((item) => {
             const Icon = item.icon;
@@ -236,7 +236,7 @@ export function Workspace() {
               <TabsTrigger
                 key={item.id}
                 value={item.id}
-                className="shrink-0 gap-2 rounded-none px-3.5 py-2.5 text-xs font-medium data-[active]:bg-transparent data-[active]:text-foreground data-[active]:after:opacity-0"
+                className="shrink-0 gap-2 rounded-none px-3 py-2 text-xs font-medium data-[active]:bg-transparent data-[active]:text-foreground data-[active]:after:opacity-0"
               >
                 {item.id === tab && (
                   <motion.span
@@ -261,7 +261,7 @@ export function Workspace() {
           })}
         </TabsList>
 
-        <Panel title={activeTab?.label} subtitle={tabDescription(tab)} bodyClassName="p-5 min-h-[320px]" beam>
+        <Panel title={activeTab?.label} subtitle={tabDescription(tab)} bodyClassName="min-h-80 p-4 sm:p-5" beam>
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={tab}

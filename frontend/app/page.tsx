@@ -92,9 +92,9 @@ export default function DashboardPage() {
     : ["System idle", "Awaiting requirement", "Agents standing by"];
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4 sm:space-y-5">
       <Reveal>
-        <section className="relative overflow-hidden rounded-2xl border border-black/[0.07] bg-surface/50 p-6 shadow-panel sm:p-8">
+        <section className="relative overflow-hidden rounded-2xl border border-black/[0.07] bg-surface/50 p-4 shadow-panel sm:p-8">
           <div className="pointer-events-none absolute inset-0">
             <AnimatedGridPattern
               width={44}
@@ -108,7 +108,7 @@ export default function DashboardPage() {
             <div className="absolute inset-0 bg-[radial-gradient(70%_120%_at_0%_0%,rgba(0, 0, 0,0.06),transparent_70%)]" />
           </div>
 
-          <div className="relative z-10 flex flex-wrap items-end justify-between gap-6">
+          <div className="relative z-10 flex flex-wrap items-end justify-between gap-4 sm:gap-6">
             <div className="max-w-2xl">
               <AnimatedGradientText
                 speed={1.1}
@@ -118,15 +118,15 @@ export default function DashboardPage() {
               >
                 Command center · live overview
               </AnimatedGradientText>
-              <h1 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
+              <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:mt-3 sm:text-4xl">
                 <AuroraText colors={["#171717", "#404040", "#737373", "#171717"]} speed={1}>
                   Good to see you.
                 </AuroraText>
               </h1>
-              <p className="mt-3 max-w-xl text-[13px] leading-relaxed text-muted-foreground">
+              <p className="mt-2 max-w-xl text-[13px] leading-relaxed text-muted-foreground sm:mt-3">
                 Real-time visibility into your autonomous engineering organization — projects, agents, approvals, and execution activity in one place.
               </p>
-              <div className="mt-6 flex flex-wrap items-center gap-3">
+              <div className="mt-4 flex flex-wrap items-center gap-3 sm:mt-6">
                 <ShimmerButton
                   onClick={() => router.push("/projects/new")}
                   shimmerColor="#d4d4d4"
@@ -145,22 +145,22 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            <div className="flex min-w-[220px] flex-1 flex-col items-end gap-3 sm:max-w-[280px]">
+            <div className="flex w-full flex-col gap-3 sm:max-w-[280px] sm:flex-1 sm:items-end">
               <div className="w-full rounded-xl border border-black/[0.07] bg-panel/70 p-4 shadow-panel backdrop-blur-sm">
                 <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
                   <span>Overall completion</span>
                   <LiveIndicator connected={stream.connected} error={stream.error} />
                 </div>
-                <div className="mt-3 flex items-baseline gap-1">
+                <div className="mt-2 flex items-baseline gap-1">
                   <NumberTicker key={completion} value={completion} duration={0.9} className="text-3xl font-semibold tabular-nums text-foreground" />
                   <span className="text-sm text-muted-foreground">%</span>
                 </div>
                 <Progress
                   value={completion}
-                  className="mt-3 flex-col gap-1.5"
+                  className="mt-2 flex-col gap-2"
                   aria-label="Overall task completion"
                 />
-                <p className="mt-3 text-[11px] text-muted-foreground">
+                <p className="mt-2 text-[11px] text-muted-foreground">
                   {formatNumber(taskStats.completed)} of {formatNumber(taskStats.total)} tasks complete
                 </p>
               </div>
@@ -185,10 +185,10 @@ export default function DashboardPage() {
         ))}
       </div>
 
-      <div className="marquee-mask overflow-hidden rounded-xl border border-black/[0.06] bg-surface/40">
-        <Marquee repeat={4} pauseOnHover className="[--duration:66s] py-1.5">
+      <div className="marquee-mask hidden overflow-hidden rounded-xl border border-black/[0.06] bg-surface/40 sm:block">
+        <Marquee repeat={4} pauseOnHover className="[--duration:66s] p-0 py-1">
           {signals.map((signal, index) => (
-            <span key={`${signal}-${index}`} className="inline-flex items-center gap-2 whitespace-nowrap px-4 text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
+            <span key={`${signal}-${index}`} className="inline-flex items-center gap-2 whitespace-nowrap px-3 text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
               <span className="h-1 w-1 rounded-full bg-foreground/40" />
               {signal}
             </span>
@@ -198,7 +198,7 @@ export default function DashboardPage() {
 
       {pendingCount > 0 && (
         <Reveal delay={stagger * 2}>
-          <div className="relative flex flex-wrap items-center justify-between gap-4 overflow-hidden rounded-xl border border-border bg-muted px-5 py-4">
+          <div className="relative flex flex-wrap items-center justify-between gap-3 overflow-hidden rounded-xl border border-border bg-muted p-4">
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_100%_at_0%_50%,rgba(0, 0, 0,0.12),transparent_70%)]" />
             <span className="relative flex items-center gap-3 text-[13px] text-muted-foreground">
               <ShieldIcon className="h-4 w-4 text-muted-foreground" />
@@ -218,7 +218,7 @@ export default function DashboardPage() {
         </Reveal>
       )}
 
-      <div className="grid gap-5 lg:grid-cols-3">
+      <div className="grid gap-4 sm:gap-5 lg:grid-cols-3">
         <Panel
           title="Active projects"
           subtitle="Live execution across the organization"
@@ -252,11 +252,11 @@ export default function DashboardPage() {
             <ul className="divide-y divide-black/[0.05]">
               {projects.slice(0, 5).map((project) => (
                 <li key={project.id}>
-                  <Link href={`/projects/${project.id}`} className="group flex flex-wrap items-center gap-3 px-5 py-3.5 transition-colors hover:bg-black/[0.03]">
+                  <Link href={`/projects/${project.id}`} className="group flex min-w-0 flex-wrap items-center gap-3 px-4 py-3 transition-colors hover:bg-black/[0.03]">
                     <span className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-muted text-muted-foreground transition-colors group-hover:border-foreground/30 group-hover:bg-accent">
                       <LayersIcon className="h-[17px] w-[17px]" />
                     </span>
-                    <div className="min-w-[140px] flex-1">
+                    <div className="min-w-0 flex-1">
                       <p className="truncate text-[13px] font-medium text-foreground group-hover:text-primary-foreground">{project.name}</p>
                       <p className="mt-0.5 truncate text-[11px] text-muted-foreground">{project.requirement}</p>
                     </div>
@@ -264,8 +264,8 @@ export default function DashboardPage() {
                       <span className="hidden text-[10px] uppercase tracking-wider text-muted-foreground sm:inline">{titleize(project.phase)}</span>
                       <StatusBadge status={project.control === "paused" ? "paused" : project.status} />
                     </div>
-                    <span className="w-14 text-right text-[10px] text-muted-foreground">{relativeTime(project.updated_at)}</span>
-                    <ChevronRightIcon className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-muted-foreground" />
+                    <span className="hidden w-14 text-right text-[10px] text-muted-foreground sm:block">{relativeTime(project.updated_at)}</span>
+                    <ChevronRightIcon className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-muted-foreground" />
                   </Link>
                 </li>
               ))}
@@ -283,7 +283,7 @@ export default function DashboardPage() {
         </Panel>
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-3">
+      <div className="grid gap-4 sm:gap-5 lg:grid-cols-3">
         <Panel
           title="Current pipeline"
           subtitle={focusProject ? `${focusProject.name} · ${titleize(focusProject.phase)} phase` : "No active execution"}

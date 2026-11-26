@@ -15,7 +15,7 @@ export default function ApprovalsPage() {
         title={<SparklesText sparklesCount={6} colors={{ first: "#a3a3a3", second: "#525252" }} className="text-2xl font-semibold tracking-tight sm:text-[28px]">Approvals</SparklesText>}
         description="The organization pauses at critical gates. Review requests from every project and decide whether execution continues."
         action={
-          <div className="flex items-center gap-2 rounded-lg border border-border bg-muted px-3 py-2 text-xs text-muted-foreground shadow-[0_0_24px_-14px_rgba(0, 0, 0,0.9)]">
+          <div className="flex w-full flex-wrap items-center justify-center gap-2 rounded-lg border border-border bg-muted p-3 text-xs text-muted-foreground shadow-[0_0_24px_-14px_rgba(0, 0, 0,0.9)] sm:w-auto sm:justify-start">
             <ShieldIcon className="h-4 w-4" />
             Decisions are recorded in the audit log
           </div>
@@ -23,7 +23,7 @@ export default function ApprovalsPage() {
       />
 
       <BlurFade delay={0.08} offset={10}>
-        <div className="relative mb-5 overflow-hidden rounded-xl border border-border bg-muted px-5 py-4">
+        <div className="relative mb-4 overflow-hidden rounded-xl border border-border bg-muted p-4">
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_120%_at_0%_50%,rgba(0, 0, 0,0.12),transparent_70%)]" />
           <p className="relative text-[13px] font-medium text-muted-foreground">
             <AuroraText colors={["#171717", "#525252", "#737373", "#171717"]} speed={0.7}>
@@ -36,7 +36,7 @@ export default function ApprovalsPage() {
         </div>
       </BlurFade>
 
-      <Panel title="Approval queue" subtitle="Across all projects" bodyClassName="p-5" beam>
+      <Panel title="Approval queue" subtitle="Across all projects" bodyClassName="p-3 sm:p-4" beam>
         <ApprovalsTab global />
       </Panel>
     </div>

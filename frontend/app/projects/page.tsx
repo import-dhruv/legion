@@ -46,18 +46,18 @@ export default function ProjectsPage() {
             onClick={() => router.push("/projects/new")}
             shimmerColor="#d4d4d4"
             background="linear-gradient(135deg, #171717, #404040 55%, #a3a3a3)"
-            className="px-4 py-2.5 text-[13px] font-semibold shadow-[0_10px_30px_-12px_rgba(0, 0, 0,0.9)]"
+            className="w-full px-4 py-2.5 text-[13px] font-semibold shadow-[0_10px_30px_-12px_rgba(0, 0, 0,0.9)] sm:w-auto"
           >
             <PlusIcon className="mr-2 h-4 w-4" /> New project
           </ShimmerButton>
         }
       />
 
-      {projectsQuery.error && <div className="mb-5"><ErrorBanner message={projectsQuery.error} onRetry={projectsQuery.refresh} /></div>}
+      {projectsQuery.error && <div className="mb-4"><ErrorBanner message={projectsQuery.error} onRetry={projectsQuery.refresh} /></div>}
 
-      <Panel className="mb-5" bodyClassName="p-4">
-        <div className="flex flex-wrap items-center gap-4">
-          <label className="relative block min-w-[220px] flex-1">
+      <Panel className="mb-4" bodyClassName="p-4">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
+          <label className="relative block w-full flex-1 sm:min-w-56">
             <SearchIcon className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
             <Input
               value={query}
@@ -100,7 +100,7 @@ export default function ProjectsPage() {
                 gradientColor="rgba(0, 0, 0,0.12)"
                 gradientFrom="#737373"
                 gradientTo="#171717"
-                className="group h-full rounded-xl p-5 shadow-panel transition-transform duration-300 hover:-translate-y-0.5"
+                className="group h-full rounded-xl p-4 shadow-panel transition-transform duration-300 hover:-translate-y-0.5 sm:p-5"
               >
                 <ShineBorder
                   borderWidth={1}
@@ -123,7 +123,7 @@ export default function ProjectsPage() {
                   <ChevronRightIcon className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-muted-foreground" />
                 </div>
 
-                <div className="mt-5 flex flex-wrap items-center gap-2">
+                <div className="mt-4 flex flex-wrap items-center gap-2">
                   <StatusBadge status={active ? project.status : project.control} />
                   <span className="rounded-full border border-line bg-elevated px-2.5 py-1 text-[10px] font-medium text-muted-foreground">
                     Phase: {titleize(project.phase)}
@@ -131,7 +131,7 @@ export default function ProjectsPage() {
                   <span className="ml-auto font-mono text-[10px] text-muted-foreground">{project.id.slice(0, 14)}…</span>
                 </div>
 
-                <div className="mt-4 border-t border-line/70 pt-4">
+                <div className="mt-4 border-t border-line/70 pt-3">
                   <PhasePipeline currentPhase={project.phase} />
                 </div>
                 <div className="mt-3 flex items-center justify-between text-[10px] text-muted-foreground">
@@ -146,7 +146,7 @@ export default function ProjectsPage() {
         </div>
       )}
 
-      <div className="mt-6 rounded-xl border border-dashed border-line bg-surface/40 px-5 py-4">
+      <div className="mt-5 rounded-xl border border-dashed border-line bg-surface/40 p-4">
         <div className="flex flex-wrap items-center gap-3">
           <SparkIcon className="h-4 w-4 text-muted-foreground" />
           <p className="flex-1 text-xs text-muted-foreground">

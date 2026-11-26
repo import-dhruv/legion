@@ -51,12 +51,12 @@ export default function NewProjectPage() {
 
   return (
     <div className="mx-auto max-w-4xl animate-fade-in">
-      <Link href="/projects" className="mb-6 inline-flex items-center gap-2 text-xs text-muted-foreground transition-colors hover:text-foreground">
+      <Link href="/projects" className="mb-4 inline-flex items-center gap-2 text-xs text-muted-foreground transition-colors hover:text-foreground">
         <ArrowLeftIcon className="h-3.5 w-3.5" /> Back to projects
       </Link>
 
       <BlurFade delay={0.05} offset={10}>
-        <div className="relative mb-7 overflow-hidden rounded-2xl border border-black/[0.07] bg-surface/50 p-6 sm:p-7">
+        <div className="relative mb-5 overflow-hidden rounded-2xl border border-black/[0.07] bg-surface/50 p-4 sm:mb-6 sm:p-6">
           <div className="pointer-events-none absolute -right-16 -top-20 h-64 w-64 rounded-full bg-muted blur-[90px]" />
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_100%_at_0%_0%,rgba(0, 0, 0,0.12),transparent_70%)]" />
           <p className="relative mb-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">New project · intake</p>
@@ -71,7 +71,7 @@ export default function NewProjectPage() {
         </div>
       </BlurFade>
 
-      {error && <div className="mb-5"><ErrorBanner message={error} /></div>}
+      {error && <div className="mb-4"><ErrorBanner message={error} /></div>}
 
       <form onSubmit={submit} className="grid gap-5 lg:grid-cols-[1.5fr_1fr]">
         <Panel title="Project requirement" subtitle="Be specific about features, constraints and desired outcomes" beam>
@@ -86,7 +86,7 @@ export default function NewProjectPage() {
                 onChange={(event) => setRequirement(event.target.value)}
                 rows={9}
                 placeholder="e.g. Build a REST API for a booking system with JWT auth, PostgreSQL storage, rate limiting, tests and Docker deployment…"
-                className="w-full resize-y rounded-lg border border-line bg-canvas/70 px-3.5 py-3 text-[13px] leading-relaxed text-foreground placeholder:text-muted-foreground focus:border-border focus:outline-none focus:ring-1 focus:ring-ring/30"
+                className="w-full resize-y rounded-lg border border-line bg-canvas/70 p-3 text-[13px] leading-relaxed text-foreground placeholder:text-muted-foreground focus:border-border focus:outline-none focus:ring-1 focus:ring-ring/30"
               />
               <div className="mt-2 flex items-center justify-between text-[11px]">
                 <span className={cn(valid ? "text-muted-foreground" : "text-muted-foreground")}>
@@ -110,7 +110,7 @@ export default function NewProjectPage() {
               />
             </div>
 
-            <div className="flex w-full items-center justify-between gap-4 rounded-lg border border-border bg-muted/40 px-3.5 py-3 text-left">
+            <div className="flex w-full items-center justify-between gap-4 rounded-lg border border-border bg-muted/40 p-3 text-left">
               <span>
                 <span className="block text-xs font-medium text-foreground">Start automatically</span>
                 <span className="mt-0.5 block text-[11px] text-muted-foreground">Agents begin working as soon as the project is created.</span>
