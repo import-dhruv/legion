@@ -319,7 +319,7 @@ export function PageHeader({
   action?: ReactNode;
 }) {
   return (
-    <div className="mb-5 flex flex-wrap items-end justify-between gap-4 sm:mb-6">
+    <div className="mb-5 flex flex-wrap items-start justify-between gap-x-4 gap-y-3 sm:mb-6">
       <div>
         {eyebrow && (
           <AnimatedGradientText
@@ -335,7 +335,7 @@ export function PageHeader({
         {description && <p className="mt-2 max-w-2xl text-[13px] leading-relaxed text-muted-foreground">{description}</p>}
         <Separator className="mt-4 w-16 bg-foreground/70" />
       </div>
-      {action}
+      {action && <div className="self-start">{action}</div>}
     </div>
   );
 }

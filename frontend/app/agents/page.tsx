@@ -78,7 +78,7 @@ function AgentCard({ agent, agents }: { agent: Agent; agents: Agent[] }) {
         className="opacity-0 transition-opacity duration-500 group-hover:opacity-100 group-focus-within:opacity-100"
       />
       <div className="relative z-40 flex flex-1 flex-col">
-      <div className="flex items-start gap-3">
+      <div className="flex items-start gap-2.5">
         <div className="relative shrink-0">
           <Avatar className="size-10 rounded-xl border border-border bg-gradient-to-br from-muted to-accent">
             <AvatarFallback className="rounded-xl bg-transparent text-sm font-bold text-foreground">
@@ -97,7 +97,7 @@ function AgentCard({ agent, agents }: { agent: Agent; agents: Agent[] }) {
         <StatusBadge status={agent.status} className="shrink-0" />
       </div>
 
-      <div className="mt-3 flex flex-wrap items-center gap-1.5">
+      <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
         <span className="rounded-md border border-border bg-muted px-2 py-1 text-[10px] font-medium capitalize text-muted-foreground">
           {agent.model_tier} model
         </span>
@@ -108,7 +108,7 @@ function AgentCard({ agent, agents }: { agent: Agent; agents: Agent[] }) {
         ))}
       </div>
 
-      <div className="mt-3 space-y-2 border-t border-line/70 pt-3 text-[11px]">
+      <div className="mt-2.5 space-y-1.5 border-t border-line/70 pt-2.5 text-[11px]">
         <div className="flex items-start justify-between gap-2">
           <span className="shrink-0 text-muted-foreground">Reports to</span>
           <span className="truncate text-right text-foreground">
@@ -123,7 +123,7 @@ function AgentCard({ agent, agents }: { agent: Agent; agents: Agent[] }) {
         </div>
       </div>
 
-      <div className="mt-3 flex-1">
+      <div className="mt-2.5 flex-1">
         <ul className="space-y-1.5">
           {(expanded ? agent.responsibilities : agent.responsibilities.slice(0, 2)).map((responsibility) => (
             <li key={responsibility} className="flex gap-2 text-[11px] leading-relaxed text-muted-foreground">
@@ -144,7 +144,7 @@ function AgentCard({ agent, agents }: { agent: Agent; agents: Agent[] }) {
         )}
       </div>
 
-      <p className="mt-3 truncate border-t border-black/[0.06] pt-2 font-mono text-[10px] text-muted-foreground" title={agent.id}>
+      <p className="mt-2.5 truncate border-t border-black/[0.06] pt-2 font-mono text-[10px] text-muted-foreground" title={agent.id}>
         {agent.id}
       </p>
       </div>
@@ -162,11 +162,11 @@ function OrgTree({ agents }: { agents: Agent[] }) {
           <p className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Human CTO</p>
           <p className="mt-1 text-sm font-semibold text-foreground">{cto ? `${cto.name} · ${cto.role}` : "Ada · Chief Technology Officer"}</p>
         </div>
-        <div className="h-6 w-px bg-line" />
+        <div className="h-4 w-px bg-line" />
         <div className="relative h-px w-full max-w-3xl bg-line">
           <span className="absolute left-1/2 top-0 h-3 w-px -translate-x-1/2 bg-line" />
         </div>
-        <div className="mt-3 grid w-full grid-cols-2 gap-2 md:grid-cols-3 xl:grid-cols-6">
+        <div className="mt-2 grid w-full grid-cols-2 gap-2 md:grid-cols-3 xl:grid-cols-6">
           {(directReports.length ? directReports : []).map((agent) => (
             <div key={agent.id} className="relative rounded-lg border border-line bg-elevated/60 px-2.5 py-2 text-center">
               <span className="absolute left-1/2 -top-[13px] h-3 w-px -translate-x-1/2 bg-line" />
@@ -231,7 +231,7 @@ export default function AgentsPage() {
         title={<SparklesText sparklesCount={4} colors={{ first: "#737373", second: "#525252" }} className="text-2xl font-semibold tracking-tight sm:text-[28px]">The agent org chart</SparklesText>}
         description="A hierarchical engineering organization — every specialist has a role, a reporting line, a model tier and a scoped set of tool permissions."
         action={
-          <div className="flex w-full flex-wrap items-center justify-center gap-2 rounded-lg border border-line bg-panel p-3 text-xs text-muted-foreground sm:w-auto sm:justify-start">
+          <div className="flex w-full items-center gap-2 rounded-lg border border-line bg-panel px-3 py-2 text-xs text-muted-foreground sm:w-auto sm:self-start">
             <UsersIcon className="h-4 w-4 text-muted-foreground" />
             <span className="font-semibold text-foreground">{agents.length || "—"}</span> agents ·{" "}
             <span className="font-semibold text-muted-foreground">{working}</span> working
@@ -254,14 +254,14 @@ export default function AgentsPage() {
           return (
             <Reveal key={item.label} delay={index * stagger}>
               <Card size="sm" className="interactive-surface shadow-panel">
-                <CardContent className="flex items-center justify-between gap-3 py-3">
-                  <div>
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">{item.label}</p>
+                <CardContent className="flex items-center justify-between gap-2 px-4 py-3">
+                  <div className="min-w-0">
+                    <p className="truncate text-[10px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">{item.label}</p>
                     <p className="mt-1.5 text-xl font-semibold tabular-nums text-foreground">
                       <NumberTicker key={item.value} value={item.value} duration={0.9} className="text-xl font-semibold tabular-nums text-foreground" />
                     </p>
                   </div>
-                  <Icon className={cn("h-5 w-5", color.text)} />
+                  <Icon className={cn("h-4 w-4 shrink-0", color.text)} />
                 </CardContent>
               </Card>
             </Reveal>
@@ -275,12 +275,12 @@ export default function AgentsPage() {
         <>
           <Reveal><OrgTree agents={agents} /></Reveal>
 
-          <Reveal className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <Reveal className="mt-4 flex flex-wrap items-center justify-between gap-3">
             <div>
               <h2 className="text-sm font-semibold text-foreground">Departments</h2>
               <p className="mt-1 text-xs text-muted-foreground">Grouped by function, ordered by reporting hierarchy.</p>
             </div>
-            <label className="relative block w-full sm:max-w-xs">
+            <label className="relative block w-full sm:w-64">
               <SearchIcon className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
               <Input
                 value={query}
@@ -310,7 +310,7 @@ export default function AgentsPage() {
                     <Reveal key={department.id} delay={Math.min(index, 8) * stagger}>
                       <AccordionItem
                         value={department.id}
-                        className="overflow-hidden rounded-xl border border-black/[0.06] bg-surface/60 [&:not(:last-child)]:border-b-0"
+                        className="overflow-hidden rounded-xl border border-black/[0.06] bg-surface/60"
                       >
                         <AccordionTrigger className="w-full gap-3 border-b border-line/70 bg-panel/40 px-4 py-3 text-left hover:no-underline">
                           <span className="flex min-w-0 flex-1 flex-wrap items-center gap-3">
