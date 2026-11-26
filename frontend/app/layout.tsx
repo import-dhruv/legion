@@ -8,8 +8,8 @@ import { ScrollProgress } from "@/components/ui/scroll-progress";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "AI-SE · Engineering Control Center",
-  description: "Autonomous AI software engineering organization control plane",
+  title: "legion · Engineering Control Center",
+  description: "legion — autonomous engineering organization control plane for projects, agents, approvals and live execution.",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

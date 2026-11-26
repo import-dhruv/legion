@@ -23,7 +23,7 @@ export function OverviewTab({ projectId, project }: { projectId: string; project
   const items = artifacts.data ?? [];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {artifacts.error && <ErrorBanner message={artifacts.error} onRetry={artifacts.refresh} />}
 
       <BlurFade delay={0.03} offset={8}>

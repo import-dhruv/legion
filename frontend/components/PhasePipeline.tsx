@@ -26,13 +26,13 @@ export function PhasePipeline({
   const isComplete = currentPhase === "completed" || currentPhase === "verified";
 
   return (
-    <div className="flex items-stretch gap-1.5 overflow-x-auto pb-2">
+    <div className="no-scrollbar flex items-stretch gap-2 overflow-x-auto pb-2">
       {PHASES.map((phase, index) => {
         const done = isComplete || (currentIndex >= 0 && index < currentIndex);
         const active = !isComplete && (currentIndex === index || (currentIndex < 0 && index === 0));
         const count = counts?.[phase];
         return (
-          <div key={phase} className="min-w-[86px] flex-1">
+          <div key={phase} className="min-w-20 flex-1">
             <div
               className={cn(
                 "relative h-1.5 overflow-hidden rounded-full transition-all duration-700",

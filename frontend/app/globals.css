@@ -140,6 +140,16 @@
     mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
     -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
   }
+
+  /* Horizontally scrollable strips (tab bar, pipeline) without a visible bar. */
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 /* Respect the OS setting: no movement, no flashing, no scroll animation. */

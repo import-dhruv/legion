@@ -126,12 +126,12 @@ export function FilesTab({ projectId }: { projectId: string }) {
       ) : paths.length === 0 ? (
         <EmptyState icon={<FolderIcon className="h-5 w-5" />} title="Workspace is empty" description="Generated files appear here as agents implement the project." />
       ) : (
-        <div className="grid gap-4 lg:grid-cols-[280px_1fr]">
+        <div className="grid gap-4 lg:grid-cols-64">
           <MagicCard gradientColor="rgba(0, 0, 0,0.10)" className="rounded-lg p-2">
             <p className="px-2 pb-2 pt-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
               {paths.length} file{paths.length === 1 ? "" : "s"}
             </p>
-            <ScrollArea className="h-[480px]">
+            <ScrollArea className="h-80 sm:h-96">
               <ul className="pr-2">
                 {tree.map((node) => (
                   <TreeItem key={node.path} node={node} depth={0} selected={selected} onSelect={(path) => void selectFile(path)} />
@@ -151,7 +151,7 @@ export function FilesTab({ projectId }: { projectId: string }) {
             ) : content === null ? (
               <EmptyState icon={<FileIcon className="h-5 w-5" />} title="No file selected" description="Choose a file from the workspace tree on the left." />
             ) : (
-              <div className="max-h-[480px] overflow-auto">
+              <div className="max-h-80 overflow-auto sm:max-h-96">
                 <pre className="min-w-max py-3 font-mono text-[11px] leading-[1.6] text-foreground">
                   {content.split("\n").map((line, index) => (
                     <div key={index} className="flex hover:bg-black/[0.025]">

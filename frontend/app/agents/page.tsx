@@ -97,7 +97,7 @@ function AgentCard({ agent, agents }: { agent: Agent; agents: Agent[] }) {
         <StatusBadge status={agent.status} className="shrink-0" />
       </div>
 
-      <div className="mt-4 flex flex-wrap items-center gap-1.5">
+      <div className="mt-3 flex flex-wrap items-center gap-1.5">
         <span className="rounded-md border border-border bg-muted px-2 py-1 text-[10px] font-medium capitalize text-muted-foreground">
           {agent.model_tier} model
         </span>
@@ -108,7 +108,7 @@ function AgentCard({ agent, agents }: { agent: Agent; agents: Agent[] }) {
         ))}
       </div>
 
-      <div className="mt-4 space-y-2 border-t border-line/70 pt-3 text-[11px]">
+      <div className="mt-3 space-y-2 border-t border-line/70 pt-3 text-[11px]">
         <div className="flex items-start justify-between gap-2">
           <span className="shrink-0 text-muted-foreground">Reports to</span>
           <span className="truncate text-right text-foreground">
@@ -156,7 +156,7 @@ function OrgTree({ agents }: { agents: Agent[] }) {
   const cto = agents.find((agent) => agent.id === "cto");
   const directReports = agents.filter((agent) => agent.reports_to === "cto");
   return (
-    <Panel title="Reporting structure" subtitle="Human CTO → executive leadership → specialized departments" bodyClassName="p-6" beam>
+    <Panel title="Reporting structure" subtitle="Human CTO → executive leadership → specialized departments" bodyClassName="p-4 sm:p-5" beam>
       <div className="flex flex-col items-center">
         <div className="w-full max-w-xs rounded-xl border border-border bg-gradient-to-br from-muted to-background px-4 py-3 text-center">
           <p className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Human CTO</p>
@@ -231,7 +231,7 @@ export default function AgentsPage() {
         title={<SparklesText sparklesCount={4} colors={{ first: "#737373", second: "#525252" }} className="text-2xl font-semibold tracking-tight sm:text-[28px]">The agent org chart</SparklesText>}
         description="A hierarchical engineering organization — every specialist has a role, a reporting line, a model tier and a scoped set of tool permissions."
         action={
-          <div className="flex items-center gap-2 rounded-lg border border-line bg-panel px-3 py-2 text-xs text-muted-foreground">
+          <div className="flex w-full flex-wrap items-center justify-center gap-2 rounded-lg border border-line bg-panel p-3 text-xs text-muted-foreground sm:w-auto sm:justify-start">
             <UsersIcon className="h-4 w-4 text-muted-foreground" />
             <span className="font-semibold text-foreground">{agents.length || "—"}</span> agents ·{" "}
             <span className="font-semibold text-muted-foreground">{working}</span> working
@@ -240,9 +240,9 @@ export default function AgentsPage() {
       />
       </Reveal>
 
-      {agentsQuery.error && <div className="mb-5"><ErrorBanner message={agentsQuery.error} onRetry={agentsQuery.refresh} /></div>}
+      {agentsQuery.error && <div className="mb-4"><ErrorBanner message={agentsQuery.error} onRetry={agentsQuery.refresh} /></div>}
 
-      <div className="mb-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <div className="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
         {[
           { label: "Total agents", value: agents.length, icon: UsersIcon, tone: "indigo" as Tone },
           { label: "Working", value: working, icon: ActivityIcon, tone: "emerald" as Tone },
@@ -275,12 +275,12 @@ export default function AgentsPage() {
         <>
           <Reveal><OrgTree agents={agents} /></Reveal>
 
-          <Reveal className="mt-5 flex flex-wrap items-center justify-between gap-3">
+          <Reveal className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h2 className="text-sm font-semibold text-foreground">Departments</h2>
               <p className="mt-1 text-xs text-muted-foreground">Grouped by function, ordered by reporting hierarchy.</p>
             </div>
-            <label className="relative block w-full max-w-xs">
+            <label className="relative block w-full sm:max-w-xs">
               <SearchIcon className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
               <Input
                 value={query}
@@ -295,7 +295,7 @@ export default function AgentsPage() {
           {filtered.length === 0 ? (
             <Panel className="mt-4"><EmptyState icon={<SearchIcon className="h-5 w-5" />} title="No matching agents" description="Try a different name, role or department." /></Panel>
           ) : (
-            <div className="mt-4 space-y-4">
+            <div className="mt-4 space-y-3">
               <Accordion
                 multiple
                 value={openDepartments}
@@ -327,7 +327,7 @@ export default function AgentsPage() {
                           </span>
                         </AccordionTrigger>
                         <AccordionContent className="pb-0">
-                          <div className="grid gap-3 p-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+                          <div className="grid grid-cols-1 gap-3 p-3 sm:grid-cols-2 xl:grid-cols-3">
                             {members.map((agent) => <AgentCard key={agent.id} agent={agent} agents={agents} />)}
                           </div>
                         </AccordionContent>

@@ -7,7 +7,6 @@ import {
   ease,
   fadeUp,
   hoverLift,
-  revealViewport,
   scaleIn,
   staggerContainer,
   tap,
@@ -24,9 +23,10 @@ export const revealVariants: Record<RevealVariant, Variants> = {
 
 /**
  * Standard entrance wrapper. Unlike ad-hoc `BlurFade delay={...}` values,
- * every reveal uses the same duration/easing and only animates the first time
- * it enters the viewport. `interactive` opts a surface into the shared
- * hover-lift / press states.
+ * every reveal uses the same duration/easing. The fade-up plays on mount (with
+ * the shared stagger delay) rather than waiting for viewport entry, so content
+ * is never left invisible while reserving layout space below the fold.
+ * `interactive` opts a surface into the shared hover-lift / press states.
  */
 export function Reveal({
   children,
@@ -52,9 +52,7 @@ export function Reveal({
     <motion.div
       className={cn(interactive && "will-change-transform", className)}
       initial={reduced ? false : "hidden"}
-      whileInView={reduced ? undefined : "visible"}
-      animate={reduced ? "visible" : undefined}
-      viewport={revealViewport}
+      animate="visible"
       variants={variants}
       whileHover={reduced || !interactive ? undefined : "hover"}
       whileTap={reduced || !interactive ? undefined : "tap"}

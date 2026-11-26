@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { api } from "@/services/api";
@@ -12,7 +13,6 @@ import {
   FolderIcon,
   PlusIcon,
   ShieldIcon,
-  SparkIcon,
   UsersIcon,
 } from "@/components/Icons";
 import { AuroraText } from "@/components/ui/aurora-text";
@@ -79,8 +79,14 @@ export function AppSidebar() {
                 />
               }
             >
-              <span className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] border border-black/10 bg-foreground text-background shadow-sm transition-transform duration-300 group-hover:scale-105">
-                <SparkIcon className="h-[18px] w-[18px]" />
+              <span className="relative flex h-8 w-8 shrink-0 items-center justify-center transition-transform duration-300 group-hover:scale-105">
+                <Image
+                  src="/legion-logo.png"
+                  alt="legion"
+                  width={32}
+                  height={32}
+                  className="h-8 w-8 object-contain"
+                />
               </span>
               <span className="flex min-w-0 flex-col leading-tight group-data-[collapsible=icon]:hidden">
                 <AuroraText
@@ -88,12 +94,12 @@ export function AppSidebar() {
                   speed={0.6}
                   className="text-[15px] font-bold tracking-[0.14em]"
                 >
-                  AI-SE
+                  legion
                 </AuroraText>
                 <span className="text-[10px] text-muted-foreground">Engineering control plane</span>
               </span>
             </TooltipTrigger>
-            <TooltipContent side="right">AI-SE control center</TooltipContent>
+            <TooltipContent side="right">legion control center</TooltipContent>
           </Tooltip>
         </div>
       </SidebarHeader>
@@ -162,10 +168,10 @@ export function AppSidebar() {
         {/* Animated Magic UI quick-nav — kept on top of the shadcn sidebar. */}
         <div className="flex justify-center group-data-[collapsible=icon]:hidden">
           <Dock
-            className="mt-2 h-12 w-max gap-0.5 border-black/[0.07] bg-white p-1.5 shadow-panel"
-            iconSize={30}
-            iconMagnification={34}
-            iconDistance={80}
+            className="mt-2 h-11 w-max max-w-full gap-0.5 border-black/[0.07] bg-white p-1.5 shadow-panel"
+            iconSize={26}
+            iconMagnification={30}
+            iconDistance={64}
           >
             {DOCK.map((item) => {
               const Icon = item.icon;
@@ -189,7 +195,7 @@ export function AppSidebar() {
           </Dock>
         </div>
 
-        <div className="relative mt-3 overflow-hidden rounded-xl border border-border bg-card p-3.5 shadow-panel group-data-[collapsible=icon]:hidden">
+        <div className="relative mt-3 overflow-hidden rounded-xl border border-border bg-card p-3 shadow-panel group-data-[collapsible=icon]:hidden">
           <div className="pointer-events-none absolute -right-8 -top-8 h-20 w-20 rounded-full bg-black/[0.04] blur-2xl" />
           <div className="relative flex items-center justify-between">
             <span className="flex items-center gap-2 text-xs font-medium text-foreground">

@@ -134,14 +134,14 @@ export function ApprovalsTab({ projectId, compact = false, global = false }: { p
                     <p className="mt-2 text-xs leading-relaxed text-foreground">{approval.description}</p>
                   </div>
                   {pending ? (
-                    <div className="flex shrink-0 items-center gap-2">
+                    <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:shrink-0">
                       <ShimmerButton
                         disabled={locked}
                         onClick={() => void decide(approval.id, true)}
                         shimmerColor="#d4d4d4"
                         shimmerDuration="3s"
                         background="linear-gradient(135deg, #171717, #404040)"
-                        className="px-3 py-1.5 text-xs font-semibold disabled:cursor-not-allowed disabled:opacity-50"
+                        className="flex-1 px-3 py-1.5 text-xs font-semibold disabled:cursor-not-allowed disabled:opacity-50 sm:flex-none"
                       >
                         <CheckIcon className="mr-1.5 h-3.5 w-3.5" /> Approve
                       </ShimmerButton>
@@ -150,6 +150,7 @@ export function ApprovalsTab({ projectId, compact = false, global = false }: { p
                         size="sm"
                         disabled={locked}
                         onClick={() => void decide(approval.id, false)}
+                        className="flex-1 sm:flex-none"
                       >
                         <XIcon className="h-3.5 w-3.5" /> Reject
                       </Button>

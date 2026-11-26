@@ -81,7 +81,7 @@ export function EventsTab({ projectId, connected }: { projectId: string; connect
             />
             Auto-scroll {autoScroll ? "on" : "off"}
           </label>
-          <label className="relative block w-full max-w-[220px]">
+          <label className="relative block w-full max-w-56">
             <SearchIcon className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
             <Input
               value={query}
@@ -96,7 +96,7 @@ export function EventsTab({ projectId, connected }: { projectId: string; connect
 
       {history.error && <div className="mb-4"><ErrorBanner message={history.error} onRetry={history.refresh} /></div>}
 
-      <div ref={scrollRef} className="max-h-[520px] min-h-[300px] overflow-y-auto rounded-xl">
+      <div ref={scrollRef} className="max-h-96 min-h-72 overflow-y-auto rounded-xl sm:max-h-[520px]">
         <Terminal
           sequence={false}
           showCaret
