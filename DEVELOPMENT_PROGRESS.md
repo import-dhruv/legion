@@ -8,6 +8,7 @@ Last updated: 2026-11-25
 - Render free: `legion-api` FastAPI Docker web service at https://legion-api-mcc0.onrender.com, health check and token auth verified.
 - Browser traffic goes through a same-origin Vercel proxy that injects the control-plane token server-side; token is never exposed to the browser or repository.
 - Rebranded the UI to **legion** with the supplied logo asset, normalized spacing/padding across all components, and made the entire site mobile-responsive (PR #6, verified at 390/768/1440px with zero horizontal overflow).
+- Gateway now supports Sarvam AI (`api-subscription-key` auth, `https://api.sarvam.ai/v1`, `sarvam-105b`, ₹ pricing) via PR #9; live 200 OK call verified with the key stored only in gitignored `.env`. Auth failures are no longer retried.
 - Railway was attempted but its trial expired and it requires a paid plan; no payment details were added.
 - Verified publicly: UI pages HTTP 200, proxy endpoints 200, direct unauthenticated API 401, SSE stream connected.
 - Free-tier limitations documented in `DEPLOYMENT.md`; full workflow runs via Docker Compose.
